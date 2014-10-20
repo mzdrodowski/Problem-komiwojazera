@@ -1,0 +1,5 @@
+Generator map
+
+Program przyjmuje jako argumenty rozmiar mapy - tablicy, liczbe miast i nazwy miast.
+Na wyjściu programu otrzymujemy plik tekstowy z rozszerzeniem .mapa który można będzie
+wykorzystać przy  uruchamianiu programu głównego znajdującego trasę komiwojażera.
