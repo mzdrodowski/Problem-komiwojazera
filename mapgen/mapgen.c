@@ -7,26 +7,22 @@ Mapgen przyjmuje jako parametry: rozmiar tablicy i ilość miast. Na wyjściu ge
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
+#include <math.h>
 
 
-int x_dim = 0;
-int y_dim = 0;
-int cit_num = 0;
-char * output_file = "output";
 
-int** cities;
 
 //inicjalizowanie macieży o zadanej liczie wierszy i kolumn
-int** allocateMatrix(int rows, int columns){
-	int** matrix;
-	matrix =  malloc ((rows) * sizeof(int *));
+double** allocateMatrix(double rows, double columns){
+	double** matrix;
+	matrix =  malloc ((rows) * sizeof(double *));
 	if(matrix==NULL){
         printf("Brak pamięci!");
         return NULL;
         }else{
 			int i;
 			for(i=0; i<rows; i++){
-				matrix[i] =  malloc((columns) * sizeof(int));
+				matrix[i] =  malloc((columns) * sizeof(double));
 				if(matrix[i]==NULL){
                     printf("Brak pamięci!");
                     return NULL;
@@ -36,28 +32,106 @@ int** allocateMatrix(int rows, int columns){
 	return matrix;
 }
 
-
 // zwalnianie pamięci danej macierzy
-int freeMatrix(int** matrix, int rows, int columns){
-
+int freeMatrix(double** matrix, int rows, int columns){
     int i;
 	for (i = 0; i<rows; i++){
-        printf("Pętla zwaniania nr: %d\n", i);
         free(matrix[i]);
-        printf("zwolniono %d", i);
 	}
-	printf("zwolniono wiersze");
 	free(matrix);
-	printf("zwolniono matrix");
 	return 0;
 }
 
-// tworzenie macierzy sąsiedztwa
-int createAdjacencyMatrix(){
-	return 0;
+/* Alokowanie pamięci i generowanie współrzędnych miast o zadanej ilości
+i w określonym zakresie */
+double ** generateCitiesCoordinates(double max_x, double max_y, int num){
+    //alokacja tablicy miast
+    double ** output = allocateMatrix(num, 2);
+
+    srand(time(NULL));
+    bool exists;
+    int i;
+	for(i=0; i<num; i++){
+		do{
+            exists = false; // czy istnieje miasto o danych współrzędnych
+			double a = (rand() % (int)(max_x*10000+1))/10000;
+			double b = (rand() % (int)(max_y*10000+1))/10000;
+
+			output[i][0] = ((double)a);
+			output[i][1] = ((double)b);
+
+			printf("\tLosowanie nr %d: wylosowano (%f, %f);\n", i, output[i][0], output[i][1]);
+			int j;
+
+			for(j=0; j<i; j++){
+                if( (output[j][0] == output[i][0])&&(output[j][1]== output[i][1])){
+                    exists=true;
+                    printf("\t!Powtórzenie\n");
+                    break;
+                }
+            }
+		}while(exists);
+    } // for (i=0; i<num; i++);
+    return output;
 }
+
+// tworzenie macierzy sąsiedztwa na podstawie macierzy współrzędnych miast
+//
+double ** createAdjacencyMatrix(int l, double ** coormatrix){
+    printf("\nTworzenie macierzy sąsiedztwa:\n\n");
+    double ** output = allocateMatrix(l,l);
+    int i,j;
+    for(i=0; i<l; i++){
+        for(j=0; j<l; j++){
+            if(i==j){
+                output[i][j]=0;
+            }else{
+                double d = coormatrix[i][0] - coormatrix[i][1];
+                d = d*d;
+                double e = coormatrix[j][0] - coormatrix[j][1];
+                e = e*e;
+                output[i][j]=sqrt(d+e);
+            }
+            printf("%f ", output[i][j]);
+        }
+        printf("\n");
+    }
+	return output;
+}
+/* zapisujemy zadaną macierz do pliku o określonej nazwie. num jest liczbą miast
+rozmiarem tablicy */
+int saveAdjacencyMatrix(double** adjmat, int num, char* name){
+    FILE * fp;
+    if((fp = fopen(name, "w"))==NULL){
+        printf("Nie można otworzyć pliku: \"%s\" do odczytu.\n",name);
+        exit(1);
+    }
+    int i, j;
+    for(i=0; i<num; i++){
+        for(j=0; j<num; j++){
+            fprintf(fp, "%f", adjmat[i][j]);
+            if(j!=(num-1)){
+                fprintf(fp," ");
+            }
+        }
+        fprintf(fp,"\n");
+    }
+    fclose(fp);
+    printf("\nWygenerowaną macierz sąsiedztwa zapisano do pliku: \"%s\".\n ", name);
+    return 0;
+}
+
+
 
 int main(int argc, char ** argv){
+
+    double x_dim = 0;
+    double y_dim = 0;
+    int cit_num = 0;
+    char * output_file = "output";
+    double ** cities;
+    double ** adjmat;
+
 	printf("Generator współrzędnych miast\n\n");
 
 	if(argc < 4)
@@ -67,11 +141,11 @@ int main(int argc, char ** argv){
 		return(1);
 	}else{
 		x_dim = atoi(argv[1]);
-		printf("Wymiar X\t: %d;\n", x_dim);
+		printf("Wymiar X\t: %f;\n", x_dim);
 		y_dim = atoi(argv[2]);
-		printf("Wymiar Y\t: %d;\n", y_dim);
+		printf("Wymiar Y\t: %f;\n", y_dim);
 		cit_num = atoi(argv[3]);
-		printf("Liczba miast\t: %d;\n",cit_num);
+		printf("Liczba miast\t: %d;\n", cit_num);
 		if(argc > 4){
 			output_file = argv[4];
 		}
@@ -80,50 +154,18 @@ int main(int argc, char ** argv){
 			printf("\nUżycie:\n");
 			return 1;
 		}else{
-			//alokacja tablicy miast
-			cities = allocateMatrix(cit_num, 2);
+
 
 			//losowanie współrzędnych miast
-			srand(time(NULL));
-            bool exists;
-            int i;
-			for(i=0; i<cit_num; i++){
-				do{
-                    exists = false; // czy istnieje miasto o danych współrzędnych
-					cities[i][0] = (rand() % x_dim);
-					cities[i][1] = (rand() % y_dim);
-
-					printf("Losowanie %d. Wylosowano (%d, %d)\n", i, cities[i][0], cities[i][1]);
-					int j;
-
-					for(j=0; j<i; j++){
-
-                        if( (cities[j][0] == cities[i][0])&&(cities[j][1]== cities[i][1])){
-                            exists=true;
-                            printf("Powtórzenie\n");
-                            break;
-                        }
-                    }
-				}while(exists);
-			}
-
-            int j;
-            for(i=0; i<cit_num; i++){
-                for(j=0; j<2; j++){
-                    printf("%d ", cities[i][j]);
-                }
-                printf("\n");
-            }
+			cities = generateCitiesCoordinates(x_dim, y_dim, cit_num);
 			//obliczanie macierzy sąsiedztwa
-			createAdjacencyMatrix();
+			adjmat = createAdjacencyMatrix(cit_num, cities);
 			//zapisywanie danych do pliku
-
+            saveAdjacencyMatrix(adjmat, cit_num, output_file);
 			//zwalnianie pamięci tablicy miast
             freeMatrix(cities, cit_num, 2);
-
+            freeMatrix(adjmat, cit_num, cit_num);
 		}
 	}
-
 	return 0;
-
 }
