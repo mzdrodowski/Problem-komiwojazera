@@ -8,28 +8,62 @@ Mapgen przyjmuje jako parametry: rozmiar tablicy i ilość miast. Na wyjściu ge
 #include <time.h>
 #include <stdbool.h>
 
-int i;
+
 int x_dim = 0;
 int y_dim = 0;
 int cit_num = 0;
-char * output_file = "output.txt";
+char * output_file = "output";
 
-struct City {
-	int x_dim;
-	int y_dim;
-	char * nazwa;
-};
+int** cities;
 
-struct City ** cities;
+//inicjalizowanie macieży o zadanej liczie wierszy i kolumn
+int** allocateMatrix(int rows, int columns){
+	int** matrix;
+	matrix =  malloc ((rows) * sizeof(int *));
+	if(matrix==NULL){
+        printf("Brak pamięci!");
+        return NULL;
+        }else{
+			int i;
+			for(i=0; i<rows; i++){
+				matrix[i] =  malloc((columns) * sizeof(int));
+				if(matrix[i]==NULL){
+                    printf("Brak pamięci!");
+                    return NULL;
+                }
+			}
+		}
+	return matrix;
+}
+
+
+// zwalnianie pamięci danej macierzy
+int freeMatrix(int** matrix, int rows, int columns){
+
+    int i;
+	for (i = 0; i<rows; i++){
+        printf("Pętla zwaniania nr: %d\n", i);
+        free(matrix[i]);
+        printf("zwolniono %d", i);
+	}
+	printf("zwolniono wiersze");
+	free(matrix);
+	printf("zwolniono matrix");
+	return 0;
+}
+
+// tworzenie macierzy sąsiedztwa
+int createAdjacencyMatrix(){
+	return 0;
+}
 
 int main(int argc, char ** argv){
 	printf("Generator współrzędnych miast\n\n");
 
 	if(argc < 4)
 	{
-		printf("Błąd: Niepoprawna liczba argumentów!\n\n");
-		printf("Poprawne użycie:\n");
-		printf("\tmapgen rozmiar_x rozmiar_y liczba_miast [plik_wyjściowy]\n");
+		printf("Użycie:");
+		printf("\t mapgen rozmiar_x rozmiar_y liczba_miast [plik_wyjściowy]\n");
 		return(1);
 	}else{
 		x_dim = atoi(argv[1]);
@@ -42,46 +76,53 @@ int main(int argc, char ** argv){
 			output_file = argv[4];
 		}
 		printf("Plik wyjściowy\t: %s;\n", output_file);
-		if(x_dim*y_dim<cit_num){
-			printf("\nBłąd: Niepoprawne dane wejściowe!\n");
+		if((x_dim * y_dim) < cit_num){
+			printf("\nUżycie:\n");
 			return 1;
 		}else{
 			//alokacja tablicy miast
-			cities = malloc(cit_num * (sizeof( struct City *)));
-			for(i=0; i<cit_num; i++){
-				cities[i] = malloc(sizeof(struct City));
-			}
+			cities = allocateMatrix(cit_num, 2);
 
-			//losowanie lokalizacji miast
+			//losowanie współrzędnych miast
 			srand(time(NULL));
             bool exists;
+            int i;
 			for(i=0; i<cit_num; i++){
 				do{
-                    exists = false;
-					int a = rand() % x_dim;
-					int b = rand() % y_dim;
-					cities[i]->x_dim = a;
-					cities[i]->y_dim = b;
+                    exists = false; // czy istnieje miasto o danych współrzędnych
+					cities[i][0] = (rand() % x_dim);
+					cities[i][1] = (rand() % y_dim);
 
-					printf("Wylosowano (%d, %d ) dla %d-go miasta\n", cities[i]->x_dim, cities[i]->y_dim, i);
+					printf("Losowanie %d. Wylosowano (%d, %d)\n", i, cities[i][0], cities[i][1]);
 					int j;
+
 					for(j=0; j<i; j++){
-                       if( (cities[j]->x_dim == cities[i]->x_dim)&&(cities[j]->y_dim == cities[i]->y_dim)){exists=true; printf("Powtórzenie\n");break;}
+
+                        if( (cities[j][0] == cities[i][0])&&(cities[j][1]== cities[i][1])){
+                            exists=true;
+                            printf("Powtórzenie\n");
+                            break;
+                        }
                     }
 				}while(exists);
 			}
+
+            int j;
+            for(i=0; i<cit_num; i++){
+                for(j=0; j<2; j++){
+                    printf("%d ", cities[i][j]);
+                }
+                printf("\n");
+            }
+			//obliczanie macierzy sąsiedztwa
+			createAdjacencyMatrix();
+			//zapisywanie danych do pliku
+
 			//zwalnianie pamięci tablicy miast
-			for(i=0; i<cit_num; i++){
-				free(cities[i]);
-			}
-			free(cities);
+            freeMatrix(cities, cit_num, 2);
 
 		}
 	}
-
-
-
-
 
 	return 0;
 
