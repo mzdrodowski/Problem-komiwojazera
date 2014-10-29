@@ -56,9 +56,10 @@ double ** generateCitiesCoordinates(double max_x, double max_y, int num){
 	for(i=0; i<num; i++){
 		do{
             exists = false; // czy istnieje miasto o danych współrzędnych
-			double a = (rand() % (int)(max_x*10000+1))/10000;
-			double b = (rand() % (int)(max_y*10000+1))/10000;
-
+			double a = (rand() % (int)(max_x*10000+1));
+			double b = (rand() % (int)(max_y*10000+1));
+            a = a/10000;
+            b = b/10000;
 			output[i][0] = ((double)a);
 			output[i][1] = ((double)b);
             if(verbose){
@@ -82,10 +83,13 @@ double ** generateCitiesCoordinates(double max_x, double max_y, int num){
 
 // tworzenie macierzy sąsiedztwa na podstawie macierzy współrzędnych miast
 //
-double ** createAdjacencyMatrix(int l, double ** coormatrix){
+double ** createAdjacencyMatrix(const int l, double ** coormatrix){
+
     printf("\nTworzenie macierzy sąsiedztwa:\n\n");
+
     double ** output = allocateMatrix(l,l);
     int i,j;
+    printf("%d\n",l);
     for(i=0; i<l; i++){
         for(j=0; j<l; j++){
             if(i==j){
@@ -97,18 +101,15 @@ double ** createAdjacencyMatrix(int l, double ** coormatrix){
                 e = e*e;
                 output[i][j]=sqrt(d+e);
             }
-
         }
-
-
-        if(verbose){
+    }
+    if(verbose){
             for(i=0;i<l; i++){
                 for(j=0;j<l; j++){
                     printf("%f ", output[i][j]);
                 }
                 printf("\n");
             }
-        }
     }
 	return output;
 }
