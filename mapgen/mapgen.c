@@ -89,7 +89,6 @@ double ** createAdjacencyMatrix(const int l, double ** coormatrix){
 
     double ** output = allocateMatrix(l,l);
     int i,j;
-    printf("%d\n",l);
     for(i=0; i<l; i++){
         for(j=0; j<l; j++){
             if(i==j){
