@@ -10,6 +10,8 @@ Mapgen przyjmuje jako parametry: rozmiar tablicy i ilość miast. Na wyjściu ge
 #include <math.h>
 
 
+bool verbose = false;
+
 
 
 //inicjalizowanie macieży o zadanej liczie wierszy i kolumn
@@ -59,14 +61,17 @@ double ** generateCitiesCoordinates(double max_x, double max_y, int num){
 
 			output[i][0] = ((double)a);
 			output[i][1] = ((double)b);
-
-			printf("\tLosowanie nr %d: wylosowano (%f, %f);\n", i, output[i][0], output[i][1]);
+            if(verbose){
+                printf("\tLosowanie nr %d: wylosowano (%f, %f);\n", i, output[i][0], output[i][1]);
+			}
 			int j;
 
 			for(j=0; j<i; j++){
                 if( (output[j][0] == output[i][0])&&(output[j][1]== output[i][1])){
                     exists=true;
-                    printf("\t!Powtórzenie\n");
+                    if(verbose){
+                        printf("\t!Powtórzenie\n");
+                    }
                     break;
                 }
             }
@@ -92,9 +97,18 @@ double ** createAdjacencyMatrix(int l, double ** coormatrix){
                 e = e*e;
                 output[i][j]=sqrt(d+e);
             }
-            printf("%f ", output[i][j]);
+
         }
-        printf("\n");
+
+
+        if(verbose){
+            for(i=0;i<l; i++){
+                for(j=0;j<l; j++){
+                    printf("%f ", output[i][j]);
+                }
+                printf("\n");
+            }
+        }
     }
 	return output;
 }
@@ -120,6 +134,15 @@ int saveAdjacencyMatrix(double** adjmat, int num, char* name){
     printf("\nWygenerowaną macierz sąsiedztwa zapisano do pliku: \"%s\".\n ", name);
     return 0;
 }
+// wydrukowanie instrukcji poprawnego użycia
+void printUsage(){
+    printf("\nUżycie: ");
+	printf("mapgen rozmiar_x rozmiar_y liczba_miast [plik_wyjściowy]\n");
+	printf("\nOpcje:\n");
+	printf("  -v \t\t\t wypisywanie \n");
+	printf("  -o NAZWA_PLIKU \t ustawienie nazwy pliku wyjściowego \n\n");
+
+}
 
 
 
@@ -132,27 +155,70 @@ int main(int argc, char ** argv){
     double ** cities;
     double ** adjmat;
 
-	printf("Generator współrzędnych miast\n\n");
+	printf("Generator współrzędnych miast\n");
 
 	if(argc < 4)
 	{
-		printf("Użycie:");
-		printf("\t mapgen rozmiar_x rozmiar_y liczba_miast [plik_wyjściowy]\n");
-		return(1);
+        printf("\nNiepoprawna liczba argumentów!\n");
+        printUsage();
+		exit(1);
 	}else{
-		x_dim = atoi(argv[1]);
+        int i, par_n;
+        par_n = 0;
+        for(i=1; i<argc; i++){
+            if(argv[i][0]=='-'){        //jeżeli opcja
+                char opt = argv[i][1];
+                switch(opt){
+                    case 'v' :
+                        verbose = true;
+                        break;
+                    case 'o' :
+                        if(argc<(i+2)){
+                            printf("Brak nazwy pliku");
+                            printUsage();
+                            exit(1);
+                            break;
+                        }else{
+                            output_file = argv[i+1];
+                            i++;
+                            break;
+                        }
+                    default :
+                        printf("Nieznana opcja\n");
+                        printUsage();
+                        exit(1);
+                }
+                printf("opcja: %c \n", argv[i][1]);
+            }
+            else{                   // jeżeli parametr
+                switch(par_n){
+                case 0  :
+                    x_dim = atoi(argv[i]);
+                    break;
+                case 1  :
+                    y_dim = atoi(argv[i]);
+                    break;
+                case 2  :
+                    cit_num = atoi(argv[i]);
+                    break;
+                default :
+                    printf("Nie poprawna liczba parametrów\n");
+                    exit(1);
+                break;
+                }
+                par_n++;
+            }
+        }
+
 		printf("Wymiar X\t: %f;\n", x_dim);
-		y_dim = atoi(argv[2]);
 		printf("Wymiar Y\t: %f;\n", y_dim);
-		cit_num = atoi(argv[3]);
 		printf("Liczba miast\t: %d;\n", cit_num);
-		if(argc > 4){
-			output_file = argv[4];
-		}
+
+
 		printf("Plik wyjściowy\t: %s;\n", output_file);
 		if((x_dim * y_dim) < cit_num){
-			printf("\nUżycie:\n");
-			return 1;
+			printUsage();
+			exit(1);
 		}else{
 
 
