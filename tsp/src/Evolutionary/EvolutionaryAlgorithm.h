@@ -12,7 +12,6 @@
 #include "CrossoverOperator.h"
 #include "MutationOperator.h"
 #include <list>
-#include <map>
 typedef std::list<int> Specimen;
 typedef std::list<Specimen> InitialPopulation;
 

@@ -32,8 +32,8 @@ int EvolutionaryAlgorithm::performAlgorithm(){
 	return 0;
 }
 void EvolutionaryAlgorithm::setCrossoverOperator(CrossoverOperator co){
-	this->crossoverOperator= co;
+	this->crossoverOperator= &co;
 }
 void EvolutionaryAlgorithm::setMutationOperator(MutationOperator mo){
-	this->mutationOperator= mo;
+	this->mutationOperator= &mo;
 }
