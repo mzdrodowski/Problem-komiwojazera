@@ -3,10 +3,15 @@ Ten plik będzie zawierał sam kod związany z samą obsługą użytkownika - po
 wejściowych itp.
 */
 
-#include<stdio.h>
-#include<stdbool.h>
-#include<stdlib.h>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "Algorithm.h"
+#include "HeuristicAlgorithm.h"
+#include "Evolutionary/EvolutionaryAlgorithm.h"
 
+using namespace std;
 
 bool verbose = false;
 char * in_file_loc;
@@ -14,6 +19,7 @@ char * out_file_loc = "output.file";
 int init_pop_num = 10; // rozmiar populacji początkowej
 char * recom_oper = {"EAX"}; //operator krzyżowania
 char * mutat_oper = {"inversion"}; //operator mutacji
+bool evolutionary = true;
 
 
 void printUsage(){
@@ -26,6 +32,10 @@ void printUsage(){
 	printf("  -r [EAX|PX|EX]\t wybór operatora krzyżowania(rekombinacji)\n");
 	printf("  -m [inversion|scramble]\t wybór operatora mutacji\n");
 
+}
+
+double ** readDataFromFile(char* inFile){
+	return NULL;
 }
 
 int main(int argc, char ** argv){
@@ -120,18 +130,24 @@ int main(int argc, char ** argv){
         printf("  Operator krzyżowania: %s\n", recom_oper);
         printf("  Operator mutacji: %s\n", mutat_oper);
 
-        // wczytanie danych z pliku
+        Algorithm *a;
 
-        // inicjalizacja populacji za pomocą losowych rozwiązań;
-        // ocena każdego kandydata
-        //while(warunek końcowy){
-            //wybór rodziców
-            //rekombinacja par rodziców;
-            //mutacja  potomstwa;
-            //ocena nowych kandydatów;
-            //wybór kandydatów do następnego pokolenia;
 
-        //}
+        if(evolutionary){
+        	a = new EvolutionaryAlgorithm();
+        	//ustawianie parametrów
+
+        }else{
+        	a = new HeuristicAlgorithm();
+        	//ustawianie parametrów
+        }
+        a->readDataFromFile(in_file_loc);
+        a->performAlgorithm();
+        a->writeResultsToFile(out_file_loc);
+
+       // a.printResults();
+
+
 
         // zapisanie danych do pliku wyjściowego
 
