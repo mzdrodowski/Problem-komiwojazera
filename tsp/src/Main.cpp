@@ -27,20 +27,24 @@ using namespace std;
 
 
 bool verbose = false;
-char * in_file_loc;
-char * out_file_loc = "output.file";
+char* in_file_loc;
+string out_file_loc = "output";
 int init_pop_num = 10; // rozmiar populacji początkowej
-char * recom_oper = {"PMX"}; //operator krzyżowania
-char * mutat_oper = {"inversion"}; //operator mutacji
+string crossover_oper = "PMX"; //operator krzyżowania
+string mutation_oper = "inversion"; //operator mutacji
 char algorythm_type = 'e';
 int generation_number = 100;
 
-AdjacencyMatrix readFromFile(char* filename){
-	AdjacencyMatrix am;
+AdjacencyMatrix* readDataFromFile(char* inFile){
+	AdjacencyMatrix* am;
+	am = new AdjacencyMatrix();
+
 	// IMPLEMENTACJA WCZYTYWANIA Z PLIKU MACIERZY SĄSIEDZTWA
 
 	return am;
 }
+
+
 void printUsage(){
 
 	printf("\nUżycie:\n");
@@ -59,9 +63,7 @@ void printUsage(){
 
 }
 
-double ** readDataFromFile(char* inFile){
-	return NULL;
-}
+
 
 int main(int argc, char ** argv){
 
@@ -133,11 +135,11 @@ int main(int argc, char ** argv){
                     case 'r'    :           //operator krzyżowania
                         if(argc>=(i+2)){
                             if(strcmp(argv[i+1], "PMX")==0){
-                                recom_oper = "PMX";
+                                crossover_oper = "PMX";
                             }else if (strcmp(argv[i+1],"OX")==0){
-                                recom_oper = "OX";
+                                crossover_oper = "OX";
                             }else if (strcmp(argv[i+1],"EX")==0){
-                                recom_oper = "EX";
+                                crossover_oper = "EX";
                             }else {
                                 printf("Nieznany argument!\n");
                                 exit(1);
@@ -152,9 +154,9 @@ int main(int argc, char ** argv){
                     case 'm'    :           //operator mutacji
                         if(argc>=(i+2)){
                             if(strcmp(argv[i+1], "inversion")==0){
-                                mutat_oper = "inversion";
+                                mutation_oper = "inversion";
                             }else if (strcmp(argv[i+1], "scramble")==0){
-                                mutat_oper = "scramble";
+                                mutation_oper = "scramble";
                             }else{
                                 printf("Nieznany argument!\n");
                                 exit(1);
@@ -179,10 +181,10 @@ int main(int argc, char ** argv){
 
         printf("\nParametry programu:\n");
         printf("  Plik wejściowy: %s\n", in_file_loc);
-        printf("  Plik wyjściowy: %s\n", out_file_loc);
+        printf("  Plik wyjściowy: %s\n", out_file_loc.c_str());
         printf("  Liczba populacji początkowej: %d\n", init_pop_num);
-        printf("  Operator krzyżowania: %s\n", recom_oper);
-        printf("  Operator mutacji: %s\n", mutat_oper);
+        printf("  Operator krzyżowania: %s\n", crossover_oper.c_str());
+        printf("  Operator mutacji: %s\n", mutation_oper.c_str());
 
         Algorithm *a;
 
@@ -199,17 +201,17 @@ int main(int argc, char ** argv){
         					ea->setInitialPopCount(init_pop_num);
         					ea->setGenerationNum(generation_number);
         					// USTAWIENIE OPERATORA KRZYŻOWANIA
-        					if(strcmp(recom_oper, "PMX")==0){
+        					if(strcmp(crossover_oper.c_str(), "PMX")==0){
                                 ea->setCrossoverOperator(new PartiallyMatchedCrossover());
-                            }else if (strcmp(recom_oper, "OX")==0){
+                            }else if (strcmp(crossover_oper.c_str(), "OX")==0){
                             	ea->setCrossoverOperator(new OrderCrossover());
-                            }else if (strcmp(recom_oper, "EX")==0){
+                            }else if (strcmp(crossover_oper.c_str(), "EX")==0){
                             	ea->setCrossoverOperator(new EdgeCrossover());
                             }
         					// USTAWIENIE OPERATORA MUTACJI
-        					if(strcmp(recom_oper, "inversion")==0){
+        					if(strcmp(mutation_oper.c_str(), "inversion")==0){
                                 ea->setMutationOperator(new InversionMutation());
-                            }else if (strcmp(recom_oper, "scramble")==0){
+                            }else if (strcmp(mutation_oper.c_str(), "scramble")==0){
                             	ea->setMutationOperator(new ScrambleMutation());
                             }
 
@@ -232,12 +234,16 @@ int main(int argc, char ** argv){
         				default		:
 							break;
 
-        }
+        } // switch algorithm type
 
         a->setVerbose(verbose);
-        a->readDataFromFile(in_file_loc);
+        a->setAdjacencyMatrix(readDataFromFile(in_file_loc));
         a->performAlgorithm();
-        a->writeResultsToFile(out_file_loc);
+
+
+
+
+
 
        // a.printResults();
 

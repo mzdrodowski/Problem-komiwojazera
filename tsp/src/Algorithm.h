@@ -16,13 +16,13 @@ class Algorithm {
 public:
 	Algorithm();
 	virtual ~Algorithm();
-	int readDataFromFile(char* inputFile);
+
 	int performAlgorithm();
-	int writeResultsToFile(char* outputFile);
+
 	void setVerbose(bool verbose);
-	void setAdjacencyMatrix(AdjacencyMatrix am);
+	void setAdjacencyMatrix(AdjacencyMatrix* am);
 private:
-	AdjacencyMatrix adjacencyMatrix;
+	AdjacencyMatrix* adjacencyMatrix;
 	bool verbose;
 
 };

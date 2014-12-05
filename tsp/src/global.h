@@ -12,9 +12,12 @@
 
 namespace MyTypes
 {
-	typedef std::list<int> Specimen;
+	using namespace std;
+
+	typedef list<int> Specimen;
 	typedef std::list<Specimen> InitialPopulation;
 	typedef std::list<std::list<double> > AdjacencyMatrix;
+	typedef list<Specimen> Population;
 
 }
 

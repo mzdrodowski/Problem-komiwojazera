@@ -18,19 +18,18 @@ Algorithm::~Algorithm() {
 	// TODO Auto-generated destructor stub
 }
 
-int Algorithm::readDataFromFile(char* inputFile){
 
-	return 0;
-}
 
 int Algorithm::performAlgorithm(){
 	return 0;
 }
-int Algorithm::writeResultsToFile(char* outputFile){
-	return 0;
-}
+
+
 
 void Algorithm::setVerbose(bool verbose){
 	Algorithm::verbose = verbose;
 }
+void Algorithm::setAdjacencyMatrix(AdjacencyMatrix* am){
 
+	this->adjacencyMatrix = am;
+}

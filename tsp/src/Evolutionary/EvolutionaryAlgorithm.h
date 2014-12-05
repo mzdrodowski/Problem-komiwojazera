@@ -14,7 +14,7 @@
 #include <list>
 #include "../global.h"
 
-
+using namespace MyTypes;
 
 
 class EvolutionaryAlgorithm: public Algorithm {
@@ -31,7 +31,7 @@ private:
 	int generation_num = 0;
 	CrossoverOperator* crossoverOperator;
 	MutationOperator* mutationOperator;
-	MyTypes::InitialPopulation * initialPopulation;
+	InitialPopulation * initialPopulation;
 
 };
 

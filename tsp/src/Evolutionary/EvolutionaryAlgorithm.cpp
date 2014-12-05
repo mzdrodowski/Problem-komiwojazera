@@ -38,9 +38,9 @@ void EvolutionaryAlgorithm::setMutationOperator(MutationOperator * mo){
 	this->mutationOperator= mo;
 }
 void EvolutionaryAlgorithm::setInitialPopCount(int popCount){
-	EvolutionaryAlgorithm::init_pop_cont=popCount;
+	this->init_pop_cont=popCount;
 }
 
 void EvolutionaryAlgorithm::setGenerationNum(int genNum){
-	EvolutionaryAlgorithm::generation_num=genNum;
+	this->generation_num=genNum;
 }
