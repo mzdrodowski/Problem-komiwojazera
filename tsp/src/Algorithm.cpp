@@ -19,6 +19,7 @@ Algorithm::~Algorithm() {
 }
 
 int Algorithm::readDataFromFile(char* inputFile){
+
 	return 0;
 }
 
@@ -27,5 +28,9 @@ int Algorithm::performAlgorithm(){
 }
 int Algorithm::writeResultsToFile(char* outputFile){
 	return 0;
+}
+
+void Algorithm::setVerbose(bool verbose){
+	Algorithm::verbose = verbose;
 }
 

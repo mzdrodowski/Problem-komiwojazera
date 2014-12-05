@@ -31,9 +31,16 @@ int EvolutionaryAlgorithm::performAlgorithm(){
     //}
 	return 0;
 }
-void EvolutionaryAlgorithm::setCrossoverOperator(CrossoverOperator co){
-	this->crossoverOperator= &co;
+void EvolutionaryAlgorithm::setCrossoverOperator(CrossoverOperator * co){
+	this->crossoverOperator= co;
 }
-void EvolutionaryAlgorithm::setMutationOperator(MutationOperator mo){
-	this->mutationOperator= &mo;
+void EvolutionaryAlgorithm::setMutationOperator(MutationOperator * mo){
+	this->mutationOperator= mo;
+}
+void EvolutionaryAlgorithm::setInitialPopCount(int popCount){
+	EvolutionaryAlgorithm::init_pop_cont=popCount;
+}
+
+void EvolutionaryAlgorithm::setGenerationNum(int genNum){
+	EvolutionaryAlgorithm::generation_num=genNum;
 }

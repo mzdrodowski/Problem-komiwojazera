@@ -9,11 +9,12 @@
 #define EVOLUTIONARYALGORITHM_H_
 
 #include "../Algorithm.h"
-#include "CrossoverOperator.h"
-#include "MutationOperator.h"
+#include "Crossover/CrossoverOperator.h"
+#include "Mutation/MutationOperator.h"
 #include <list>
-typedef std::list<int> Specimen;
-typedef std::list<Specimen> InitialPopulation;
+#include "../global.h"
+
+
 
 
 class EvolutionaryAlgorithm: public Algorithm {
@@ -21,12 +22,17 @@ public:
 	EvolutionaryAlgorithm();
 	virtual ~EvolutionaryAlgorithm();
 	int performAlgorithm();
-	void setCrossoverOperator(CrossoverOperator co);
-	void setMutationOperator(MutationOperator mo);
+	void setCrossoverOperator(CrossoverOperator * co);
+	void setMutationOperator(MutationOperator* mo);
+	void setInitialPopCount(int popCount);
+	void setGenerationNum(int genNum);
 private:
+	int init_pop_cont = 0;
+	int generation_num = 0;
 	CrossoverOperator* crossoverOperator;
 	MutationOperator* mutationOperator;
-	InitialPopulation initialPopulation;
+	MyTypes::InitialPopulation * initialPopulation;
+
 };
 
 #endif /* EVOLUTIONARYALGORITHM_H_ */

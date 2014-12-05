@@ -8,6 +8,10 @@
 #ifndef ALGORITHM_H_
 #define ALGORITHM_H_
 
+#include "global.h"
+
+using namespace MyTypes;
+
 class Algorithm {
 public:
 	Algorithm();
@@ -15,6 +19,11 @@ public:
 	int readDataFromFile(char* inputFile);
 	int performAlgorithm();
 	int writeResultsToFile(char* outputFile);
+	void setVerbose(bool verbose);
+	void setAdjacencyMatrix(AdjacencyMatrix am);
+private:
+	AdjacencyMatrix adjacencyMatrix;
+	bool verbose;
 
 };
 

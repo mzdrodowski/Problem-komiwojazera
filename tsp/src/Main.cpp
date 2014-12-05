@@ -7,30 +7,55 @@ wejściowych itp.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <list>
 #include "Algorithm.h"
 #include "HeuristicAlgorithm.h"
 #include "Evolutionary/EvolutionaryAlgorithm.h"
+#include "Hybrid/HybridAlgorithm.h"
+#include "global.h"
+#include "Evolutionary/Crossover/PartiallyMatchedCrossover.h"
+#include "Evolutionary/Crossover/CrossoverOperator.h"
+#include "Evolutionary/Crossover/EdgeCrossover.h"
+#include "Evolutionary/Crossover/OrderCrossover.h"
+#include "Evolutionary/Mutation/InversionMutation.h"
+#include "Evolutionary/Mutation/MutationOperator.h"
+#include "Evolutionary/Mutation/ScrambleMutation.h"
+
 
 using namespace std;
+
+
 
 bool verbose = false;
 char * in_file_loc;
 char * out_file_loc = "output.file";
 int init_pop_num = 10; // rozmiar populacji początkowej
-char * recom_oper = {"EAX"}; //operator krzyżowania
+char * recom_oper = {"PMX"}; //operator krzyżowania
 char * mutat_oper = {"inversion"}; //operator mutacji
-bool evolutionary = true;
+char algorythm_type = 'e';
+int generation_number = 100;
 
+AdjacencyMatrix readFromFile(char* filename){
+	AdjacencyMatrix am;
+	// IMPLEMENTACJA WCZYTYWANIA Z PLIKU MACIERZY SĄSIEDZTWA
 
+	return am;
+}
 void printUsage(){
 
-	printf("\nOpcje\n");
-	printf("\nUżycie: trasal PLIK_WEJŚCIOWY [opcje]\n");
-	printf("  -v \t\t\t wypisanie przebiegu działania programu\n");
-	printf("  -o PLIK_WYNIKOWY \t nazwa pliku wynikowego \n");
-	printf("  -l LICZBA_POCZ \t liczba osobników w populacji początkowej\n");
-	printf("  -r [EAX|PX|EX]\t wybór operatora krzyżowania(rekombinacji)\n");
-	printf("  -m [inversion|scramble]\t wybór operatora mutacji\n");
+	printf("\nUżycie:\n");
+	printf(" tsp [opcje] <plik macierzy sąsiedztwa>\n");
+	printf("\nOpcje:\n");
+	printf(" -t [=<typ>]\t\t\t typ algorytmu 'e' (ewolucyjny), 'h'(heurystyczny) lub 'y' (hybrydowy)\n" );
+	printf(" -o <plik wynikowy> \t\t nazwa pliku wynikowego \n");
+	printf(" -v \t\t\t\t wypisanie przebiegu działania programu\n");
+	printf("\n");
+	printf(" -l <number> \t\t\t liczba osobników w populacji początkowej\n");
+	printf(" -p <number>\t\t\t liczba pokoleń (generacji) domyślnie 100\n");
+	printf(" -r [=<oper_krzyżowania>]\t operator krzyżowania(rekombinacji): 'PMX', 'OX' lub 'EX'\n");
+	printf(" -m [=<oper_mutacji>]\t\t operator mutacji: 'inversion', 'scramble'\n");
+
+	printf("\n");
 
 }
 
@@ -40,10 +65,8 @@ double ** readDataFromFile(char* inFile){
 
 int main(int argc, char ** argv){
 
-	printf("\nProblem komiwojażera - algorytm ewolucyjny\n");
-
 	if(argc<2){
-        printf("\nNiepoprawna liczba argumentów\n");
+        printf("\nNiepoprawna liczba argumentów!\n");
 		printUsage();
 		exit(1);
     }else{
@@ -71,17 +94,48 @@ int main(int argc, char ** argv){
                             init_pop_num = atoi(argv[i+1]);
                             i++;
                         }else{
-                            printf("Za mało argumentów");
+                            printf("Za mało argumentów!\n");
                             printUsage();
                             exit(1);
                         }
                     break;
+                    case 'p'    :           //liczba generacji
+                        if(argc>=(i+2)){
+                            generation_number = atoi(argv[i+1]);
+                            i++;
+                        }else{
+                            printf("Za mało argumentów!\n");
+                            printUsage();
+                            exit(1);
+                        }
+                    break;
+
+                    case 't'	:
+                    	if(argc>=(i+2)){
+                    		if(argv[i+1][0]=='e'){
+                    			algorythm_type = 'e';
+                    		}else if(argv[i+1][0]=='h'){
+                    			algorythm_type = 'h';
+                    		}else if(argv[i+1][0]=='y'){
+                    			algorythm_type = 'y';
+                    		}else  {
+                    			printf("Nieznany argument!\n");
+                    		}
+                    		i++;
+                        } else {
+                            printf("Za mało argumentów!\n");
+                            printUsage();
+                            exit(1);
+                        }
+                    break;
+
+
                     case 'r'    :           //operator krzyżowania
                         if(argc>=(i+2)){
-                            if(strcmp(argv[i+1], "EAX")==0){
-                                recom_oper = "EAX";
-                            }else if (strcmp(argv[i+1],"PX")==0){
-                                recom_oper = "PX";
+                            if(strcmp(argv[i+1], "PMX")==0){
+                                recom_oper = "PMX";
+                            }else if (strcmp(argv[i+1],"OX")==0){
+                                recom_oper = "OX";
                             }else if (strcmp(argv[i+1],"EX")==0){
                                 recom_oper = "EX";
                             }else {
@@ -132,15 +186,55 @@ int main(int argc, char ** argv){
 
         Algorithm *a;
 
+        switch(algorythm_type)	{
+        				case 'e'	:
+        				{
+        					printf("Algorytm ewolucyjny");
 
-        if(evolutionary){
-        	a = new EvolutionaryAlgorithm();
-        	//ustawianie parametrów
+        					EvolutionaryAlgorithm *ea = new EvolutionaryAlgorithm;
 
-        }else{
-        	a = new HeuristicAlgorithm();
-        	//ustawianie parametrów
+        					a=ea;
+        					//ustawienie parametrów typowych dla algorytmu ewolucyjnego
+
+        					ea->setInitialPopCount(init_pop_num);
+        					ea->setGenerationNum(generation_number);
+        					// USTAWIENIE OPERATORA KRZYŻOWANIA
+        					if(strcmp(recom_oper, "PMX")==0){
+                                ea->setCrossoverOperator(new PartiallyMatchedCrossover());
+                            }else if (strcmp(recom_oper, "OX")==0){
+                            	ea->setCrossoverOperator(new OrderCrossover());
+                            }else if (strcmp(recom_oper, "EX")==0){
+                            	ea->setCrossoverOperator(new EdgeCrossover());
+                            }
+        					// USTAWIENIE OPERATORA MUTACJI
+        					if(strcmp(recom_oper, "inversion")==0){
+                                ea->setMutationOperator(new InversionMutation());
+                            }else if (strcmp(recom_oper, "scramble")==0){
+                            	ea->setMutationOperator(new ScrambleMutation());
+                            }
+
+        				}	// algorytm ewolucyjny
+        					break;
+        				case 'h'	:
+        				{
+        					printf("Algorytm heurystyczny");
+        					a = new HeuristicAlgorithm();
+        					//ustawienie parametrów typowych dla algorytmu heurystycznego
+        				}
+        					break;
+        				case 'y'	:
+        				{
+        					printf("Algorytm hybrydowy");
+        					a = new HybridAlgorithm();
+        					//ustawienie parametrów typowych dla algorytmu hybrydowego
+        				}
+        					break;
+        				default		:
+							break;
+
         }
+
+        a->setVerbose(verbose);
         a->readDataFromFile(in_file_loc);
         a->performAlgorithm();
         a->writeResultsToFile(out_file_loc);
