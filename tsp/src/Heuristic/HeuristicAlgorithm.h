@@ -7,7 +7,7 @@
 
 #ifndef HEURISTICALGORITHM_H_
 #define HEURISTICALGORITHM_H_
-#include "Algorithm.h"
+#include "../Algorithm.h"
 
 class HeuristicAlgorithm: public Algorithm{
 public:

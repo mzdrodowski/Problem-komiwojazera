@@ -9,7 +9,7 @@ wejściowych itp.
 #include <string.h>
 #include <list>
 #include "Algorithm.h"
-#include "HeuristicAlgorithm.h"
+#include "Heuristic/HeuristicAlgorithm.h"
 #include "Evolutionary/EvolutionaryAlgorithm.h"
 #include "Hybrid/HybridAlgorithm.h"
 #include "global.h"
