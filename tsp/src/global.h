@@ -9,6 +9,7 @@
 #define GLOBAL_H_
 
 #include <list>
+#include <vector>
 
 namespace MyTypes
 {
@@ -16,7 +17,21 @@ namespace MyTypes
 
 	typedef list<int> Specimen;
 	typedef std::list<Specimen> InitialPopulation;
-	typedef std::list<std::list<double> > AdjacencyMatrix;
+
+
+	 struct Edge {
+		int num;
+		double value;
+	};
+
+	typedef std::vector<std::vector<Edge*> *> AdjacencyMatrix;
+
+	struct Coordinate {
+		int num;
+		double x;
+		double y;
+	};
+
 	typedef list<Specimen> Population;
 
 }

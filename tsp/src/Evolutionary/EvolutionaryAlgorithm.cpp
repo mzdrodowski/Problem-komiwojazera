@@ -13,7 +13,11 @@ EvolutionaryAlgorithm::EvolutionaryAlgorithm() {
 }
 
 EvolutionaryAlgorithm::~EvolutionaryAlgorithm() {
-	// TODO Auto-generated destructor stub
+
+	delete crossoverOperator;
+	delete mutationOperator;
+
+
 }
 
 int EvolutionaryAlgorithm::performAlgorithm(){
@@ -32,15 +36,16 @@ int EvolutionaryAlgorithm::performAlgorithm(){
 	return 0;
 }
 void EvolutionaryAlgorithm::setCrossoverOperator(CrossoverOperator * co){
-	this->crossoverOperator= co;
+	EvolutionaryAlgorithm::crossoverOperator = co;
 }
 void EvolutionaryAlgorithm::setMutationOperator(MutationOperator * mo){
-	this->mutationOperator= mo;
+	EvolutionaryAlgorithm::mutationOperator= mo;
 }
 void EvolutionaryAlgorithm::setInitialPopCount(int popCount){
-	this->init_pop_cont=popCount;
+	EvolutionaryAlgorithm::init_pop_cont=popCount;
 }
 
 void EvolutionaryAlgorithm::setGenerationNum(int genNum){
-	this->generation_num=genNum;
+	EvolutionaryAlgorithm::generation_num=genNum;
 }
+

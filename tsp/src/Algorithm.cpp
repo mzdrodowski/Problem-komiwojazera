@@ -10,7 +10,8 @@
 #include <cstdio>
 
 Algorithm::Algorithm() {
-	// TODO Auto-generated constructor stub
+	verbose = false;
+	adjacencyMatrix = NULL;
 
 }
 

@@ -20,6 +20,11 @@ wejściowych itp.
 #include "Evolutionary/Mutation/InversionMutation.h"
 #include "Evolutionary/Mutation/MutationOperator.h"
 #include "Evolutionary/Mutation/ScrambleMutation.h"
+#include <fstream>
+#include <vector>
+#include <limits>
+#include <math.h>
+
 
 
 using namespace std;
@@ -27,7 +32,7 @@ using namespace std;
 
 
 bool verbose = false;
-char* in_file_loc;
+string in_file_loc;
 string out_file_loc = "output";
 int init_pop_num = 10; // rozmiar populacji początkowej
 string crossover_oper = "PMX"; //operator krzyżowania
@@ -35,20 +40,196 @@ string mutation_oper = "inversion"; //operator mutacji
 char algorythm_type = 'e';
 int generation_number = 100;
 
-AdjacencyMatrix* readDataFromFile(char* inFile){
-	AdjacencyMatrix* am;
-	am = new AdjacencyMatrix();
+// zmienne przechwujące dane pliku wejściowego *.tsp
+string name;
+string node_coord_type;
+string comment;
 
-	// IMPLEMENTACJA WCZYTYWANIA Z PLIKU MACIERZY SĄSIEDZTWA
+int dimension;
 
-	return am;
+list<Edge*> edgeList;
+
+/**
+ * Funkcja ta ma wczytać dane z pliku wejściowego. Na podstawie koordynatów zawartych w pliku wejściowym
+ * zostanie utworzona macierz sąsiedztwa - AdjacencyMatrix
+ */
+AdjacencyMatrix* readDataFromFile(const char * file_path){
+
+	std::ifstream ifs;
+	ifs.open(file_path);
+	if (!ifs.is_open()){
+		cout << "Nie udało się otworzyć pliku!" << endl;
+		cout << "Zakończenie działania programu..." << endl;
+		exit(1);
+	}
+
+
+	/* WCZYTANIE METADANYCH Z PLIKU WEJŚCIOWEGO (na podst. dokumentacji tslib)*/
+
+
+	string s;
+	string s_tmp;
+	ifs >> s;
+
+
+	while((s.compare("NODE_COORD_SECTION")!=0)&&(!ifs.eof())){
+		if(s.compare("NAME")==0){
+			ifs >> s_tmp; // wczytywanie dwukropka
+			ifs >> name;
+		}else if(s.compare("COMMENT")==0){
+			ifs >> s_tmp;
+			char c;
+
+			while((c = ifs.get())!='\n'){
+				comment+=c;
+			}
+			comment+='\n';
+
+
+		}else if(s.compare("DIMENSION")==0){
+			ifs >> s_tmp;
+			ifs >> dimension;
+		}else if(s.compare("CAPACITY")==0){
+			ifs >> s_tmp;
+			ifs >> s_tmp;
+		}else if(s.compare("EDGE_WEIGHT_TYPE")==0){
+			ifs >> s_tmp;
+			ifs >> s_tmp;
+		}else if(s.compare("EDGE_WEIGHT_FORMAT")==0){
+			ifs >> s_tmp;
+			ifs >> s_tmp;
+		}else if(s.compare("EDGE_DATA_FORMAT")==0){
+			ifs >> s_tmp;
+			ifs >> s_tmp;
+		}else if(s.compare("NODE_COORD_TYPE")==0){
+			ifs >> s_tmp;
+			ifs >> node_coord_type;
+		}else if(s.compare("DISPLAY_DATA_TYPE")==0){
+			ifs >> s_tmp;
+			ifs >> s_tmp;
+		}else{
+			ifs >> s_tmp;
+			ifs >> s_tmp;
+		}
+
+		ifs >> s;
+
+	}
+	ifs.clear();
+
+
+	// WCZYTYWANIE KOORDYNATÓW DO LISTY
+
+	vector<Coordinate> coordinateVector;
+
+	int a;
+	ifs >> s;
+	double b;
+	while((s.compare("EOF")!=0)&&(!ifs.eof())){
+		Coordinate coord;
+
+		a = atoi(s.c_str());
+		coord.num = a;
+
+		ifs >> s;
+		b = atof(s.c_str());
+		coord.x=b;
+
+		ifs >> s;
+		b = atof(s.c_str());
+		coord.y=b;
+
+		if(verbose){
+			cout << "Vertex no.\t"<< coord.num << ":\t";
+			cout.precision(std::numeric_limits<double>::digits10);
+			cout << "x = " << coord.x << ";\t";
+			cout << "y = " << coord.y << endl;
+		}
+
+		ifs >> s;
+
+		coordinateVector.push_back(coord);
+
+	}
+	ifs.close();
+
+	/*OBLICZENIE MACIERZY SĄSIEDZTWA */
+
+	AdjacencyMatrix *adjacencyMatrix;
+	adjacencyMatrix = new AdjacencyMatrix;
+
+	int size = coordinateVector.size();
+
+
+	int i=0, j=0, k=0;
+	for (i=0; i<size; i++){
+		vector<Edge*>* edgeRow = new vector<Edge*>();
+		adjacencyMatrix->push_back(edgeRow);
+	}
+
+
+	for (i=0; i<size; i++){
+		for (j=i; j<size; j++){
+			//Edge* edge = (struct Edge*) malloc (sizeof(struct Edge));
+			Edge* edge = new Edge();
+			double d;
+			double xi = coordinateVector[i].x;
+			double yi = coordinateVector[i].y;
+			double xj = coordinateVector[j].x;
+			double yj = coordinateVector[j].y;
+			if(i==j){
+
+				edge->num=0;
+				edge->value=0;
+				adjacencyMatrix->at(i)->push_back(edge);
+
+			}else{
+
+				k++;
+				d = sqrt(pow((xi-xj),2) + pow((yi-yj),2));
+				edge->value=d;
+				edge->num=k;
+				edgeList.push_back(edge);
+
+				adjacencyMatrix->at(i)->push_back(edge);
+				adjacencyMatrix->at(j)->push_back(edge);
+			}
+
+			//cout << "\t" << adjacencyMatrix->at(i)->at(j)->value;
+
+		}
+		//cout << endl;
+	}
+	// wypisanie zawartości macierzy sąsiedztwa
+
+	if(verbose){
+		cout << endl << "\t ********** ZAWARTOŚĆ MACIERZY SĄSIEDZTWA ***********" << endl;
+
+
+		for(i=0; i<size; i++ ){
+			for(j=0; j<size; j++){
+				cout << adjacencyMatrix->at(i)->at(j)->value << "\t";
+			}
+			cout << endl;
+		}
+		cout << endl << "\t ********** ZAWARTOŚĆ LISTY KRAWĘDZI ***********" << endl;
+
+				for(list<Edge*>::iterator iter=edgeList.begin(); iter!=edgeList.end(); iter++ ){
+					cout << (*iter)->value << endl;
+				}
+	}
+
+
+
+
+	return adjacencyMatrix;
 }
 
 
 void printUsage(){
 
 	printf("\nUżycie:\n");
-	printf(" tsp [opcje] <plik macierzy sąsiedztwa>\n");
+	printf(" tsp [opcje] <plik wejściowy .tsp>\n");
 	printf("\nOpcje:\n");
 	printf(" -t [=<typ>]\t\t\t typ algorytmu 'e' (ewolucyjny), 'h'(heurystyczny) lub 'y' (hybrydowy)\n" );
 	printf(" -o <plik wynikowy> \t\t nazwa pliku wynikowego \n");
@@ -67,6 +248,8 @@ void printUsage(){
 
 int main(int argc, char ** argv){
 
+
+	/* przetwarzanie argumentów */
 	if(argc<2){
         printf("\nNiepoprawna liczba argumentów!\n");
 		printUsage();
@@ -177,56 +360,58 @@ int main(int argc, char ** argv){
             }
         } //koniec pętli przeglądającej argumenty
 
-    	// Wydrukowanie parametrów algorytmu
 
-        printf("\nParametry programu:\n");
-        printf("  Plik wejściowy: %s\n", in_file_loc);
-        printf("  Plik wyjściowy: %s\n", out_file_loc.c_str());
-        printf("  Liczba populacji początkowej: %d\n", init_pop_num);
-        printf("  Operator krzyżowania: %s\n", crossover_oper.c_str());
-        printf("  Operator mutacji: %s\n", mutation_oper.c_str());
+
+
+
 
         Algorithm *a;
 
         switch(algorythm_type)	{
         				case 'e'	:
         				{
-        					printf("Algorytm ewolucyjny");
+        					printf("Algorytm ewolucyjny\n");
 
-        					EvolutionaryAlgorithm *ea = new EvolutionaryAlgorithm;
 
-        					a=ea;
+
+        					EvolutionaryAlgorithm ea;
+
+
+
+
         					//ustawienie parametrów typowych dla algorytmu ewolucyjnego
 
-        					ea->setInitialPopCount(init_pop_num);
-        					ea->setGenerationNum(generation_number);
+        					ea.setInitialPopCount(init_pop_num);
+        					ea.setGenerationNum(generation_number);
         					// USTAWIENIE OPERATORA KRZYŻOWANIA
         					if(strcmp(crossover_oper.c_str(), "PMX")==0){
-                                ea->setCrossoverOperator(new PartiallyMatchedCrossover());
+
+                                ea.setCrossoverOperator(new PartiallyMatchedCrossover());
                             }else if (strcmp(crossover_oper.c_str(), "OX")==0){
-                            	ea->setCrossoverOperator(new OrderCrossover());
+                            	ea.setCrossoverOperator(new OrderCrossover());
                             }else if (strcmp(crossover_oper.c_str(), "EX")==0){
-                            	ea->setCrossoverOperator(new EdgeCrossover());
+                            	ea.setCrossoverOperator(new EdgeCrossover());
                             }
         					// USTAWIENIE OPERATORA MUTACJI
         					if(strcmp(mutation_oper.c_str(), "inversion")==0){
-                                ea->setMutationOperator(new InversionMutation());
+                                ea.setMutationOperator(new InversionMutation());
                             }else if (strcmp(mutation_oper.c_str(), "scramble")==0){
-                            	ea->setMutationOperator(new ScrambleMutation());
+                            	ea.setMutationOperator(new ScrambleMutation());
                             }
+        					a=&ea;
 
         				}	// algorytm ewolucyjny
         					break;
         				case 'h'	:
         				{
-        					printf("Algorytm heurystyczny");
+        					printf("Algorytm heurystyczny\n");
         					a = new HeuristicAlgorithm();
         					//ustawienie parametrów typowych dla algorytmu heurystycznego
         				}
         					break;
         				case 'y'	:
         				{
-        					printf("Algorytm hybrydowy");
+        					printf("Algorytm hybrydowy\n");
         					a = new HybridAlgorithm();
         					//ustawienie parametrów typowych dla algorytmu hybrydowego
         				}
@@ -237,7 +422,28 @@ int main(int argc, char ** argv){
         } // switch algorithm type
 
         a->setVerbose(verbose);
-        a->setAdjacencyMatrix(readDataFromFile(in_file_loc));
+
+
+        AdjacencyMatrix *am = readDataFromFile(in_file_loc.c_str());
+        a->setAdjacencyMatrix(am);
+
+
+    	// Wydrukowanie parametrów algorytmu
+        if(verbose){
+        	printf("\nParametry programu:\n");
+        	printf("  Plik wejściowy: %s\n", in_file_loc.c_str());
+        	printf("  Plik wyjściowy: %s\n", out_file_loc.c_str());
+        	printf("  Liczba populacji początkowej: %d\n", init_pop_num);
+        	printf("  Operator krzyżowania: %s\n", crossover_oper.c_str());
+        	printf("  Operator mutacji: %s\n", mutation_oper.c_str());
+
+        	cout << endl << "Metadane pliku wejściowego:" << endl;
+        	cout << "\tNazwa zbioru:\t\t" << name << endl;
+        	cout << "\t" << comment << endl;
+        	cout << "\tTyp węzłów współrzędnych:\t" << node_coord_type << endl;
+        	cout << "\tLiczba węzłów(miast):\t" << dimension << endl;
+        }
+
         a->performAlgorithm();
 
 
@@ -250,6 +456,22 @@ int main(int argc, char ** argv){
 
 
         // zapisanie danych do pliku wyjściowego
+
+        // ********** ZWALNIANIE PAMIĘCI **********
+
+        int j;
+        for (i=0; i<am->size(); i++){
+        	vector<Edge*> * edgeRow;
+        	edgeRow = am->at(i);
+        	for (j=i; j<edgeRow->size(); j++){
+        		delete edgeRow->at(j);
+        	}
+        	delete edgeRow;
+
+    	}
+
+
+        delete am;
 
         return 0;
 
