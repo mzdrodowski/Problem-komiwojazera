@@ -22,6 +22,7 @@ public:
 	static Graph* getInstance();
 	int getEdgeCount();
 	int getVertexCount();
+	std::vector<Vertex*> getVertexVector();
 	/**
 	 * Dodaje wierzchołek do grafu wszystkie możliwe krawędzie są dodawane
 	 * automatycznie

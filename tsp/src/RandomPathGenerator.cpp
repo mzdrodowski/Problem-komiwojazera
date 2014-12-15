@@ -42,20 +42,39 @@ GraphModel::Path* RandomPathGenerator::generatePath(){
 
 	int size = Graph::getInstance()->getVertexCount();
 	path->addVertex(Graph::getInstance()->getVertex(1));
-	cout << "size=" << size;
-	srand(time(0));
-	for (int i=1; i<size; i++){
-		cout<< "losowanie no." << i<< endl;
-		int number = 0;
-		do{
-			number = rand()%size+1;
-			cout<< "\t-\twylosowano\t:\t" << number << endl;
-		}while((path->vertexExitst(number)));
 
-		Vertex* v = Graph::getInstance()->getVertex(number);
+	vector<Vertex*> vvec = Graph::getInstance()->getVertexVector();
+	vvec.erase(vvec.begin()); // usuwamy zerowy czyli pierwszy bo od niego będziemy zaczynać
+	srand(time(0));
+	int number = {0};
+	int remain_elems = {0};
+	for (int i=1; i<size; i++){
+		//cout<< "Losowanie no." << i<< endl;
+
+		remain_elems = vvec.size();
+		//cout<< "Rozmiar vektora =" << remain_elems <<endl;
+
+		number = rand()%remain_elems;
+		//do{
+			//number = rand()%size+1;
+			//cout<< "\t-\twylosowano liczbę\t:\t" << number << endl;
+		//}while((path->vertexExitst(number)));
+
+		Vertex* v = vvec.at(number);
+		//cout << "pod tym numerem znajduje się " << v->getId() << endl;
 		path->addVertex(v);
-		cout<< "dodano "<< number << endl;
-		cout<< "długość dotychczasowa: " << path->getLenght()<< endl << endl;
+
+		//cout << "coś" << endl;
+		vector<Vertex*>::iterator it = vvec.begin();
+
+		for (int j=0; j<number; j++){
+		//	cout << "przes "<< endl;
+			it++;
+		}
+		vvec.erase(it);
+
+		//ut<< "Dodano wierzchołek nr: "<< number << endl;
+		//cout<< "Całkowita dotychczasowa długość: " << path->getLenght()<< endl << endl;
 	}
 	if(verbose){
 		cout << "*********************************************"<< endl
@@ -66,7 +85,7 @@ GraphModel::Path* RandomPathGenerator::generatePath(){
 		for (it=vl.begin(); it != vl.end(); it++){
 			cout << (*it)->getId() << " --> ";
 		}
-		cout << endl << "Całkowita długość tej ścieżki:" << path->getLenght() <<endl;
+		cout <<"1"<< endl << "Całkowita długość tej ścieżki:\t" << path->getLenght() <<endl;
 
 	}
 

@@ -100,5 +100,8 @@ int Graph::getEdgeCount(){
 int Graph::getVertexCount(){
 	return vertexCount;
 }
+std::vector<Vertex*> Graph::getVertexVector(){
+	return Graph::vertexVector;
+}
 
 } // GraphModel namespace
