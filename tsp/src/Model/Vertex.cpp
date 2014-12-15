@@ -7,11 +7,7 @@
 
 #include "Vertex.h"
 
-Vertex::Vertex() {
-	x_coord=0;
-	y_coord=0;
-	id=0;
-}
+namespace GraphModel{
 
 Vertex::~Vertex() {
 	// TODO Auto-generated destructor stub
@@ -35,3 +31,5 @@ double Vertex::getY(){
 int Vertex::getId(){
 	return id;
 }
+
+}// namespace GraphModel

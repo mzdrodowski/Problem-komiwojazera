@@ -8,7 +8,11 @@
 #include "EvolutionaryAlgorithm.h"
 
 EvolutionaryAlgorithm::EvolutionaryAlgorithm() {
-	// TODO Auto-generated constructor stub
+	crossoverOperator = NULL;
+	mutationOperator = NULL;
+	generation_num = 0;
+	init_pop_cont = 0;
+
 
 }
 

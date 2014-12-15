@@ -7,6 +7,8 @@
 
 #include "Path.h"
 
+namespace GraphModel{
+
 Path::Path() {
 	// TODO Auto-generated constructor stub
 
@@ -15,4 +17,5 @@ Path::Path() {
 Path::~Path() {
 	// TODO Auto-generated destructor stub
 }
+}//namespace GraphModel
 

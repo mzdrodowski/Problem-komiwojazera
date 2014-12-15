@@ -8,11 +8,15 @@ wejściowych itp.
 #include <stdlib.h>
 #include <string.h>
 #include <list>
+#include <fstream>
+#include <vector>
+#include <limits>
+#include <math.h>
+
 #include "Algorithm.h"
 #include "Heuristic/HeuristicAlgorithm.h"
 #include "Evolutionary/EvolutionaryAlgorithm.h"
 #include "Hybrid/HybridAlgorithm.h"
-#include "global.h"
 #include "Evolutionary/Crossover/PartiallyMatchedCrossover.h"
 #include "Evolutionary/Crossover/CrossoverOperator.h"
 #include "Evolutionary/Crossover/EdgeCrossover.h"
@@ -20,40 +24,39 @@ wejściowych itp.
 #include "Evolutionary/Mutation/InversionMutation.h"
 #include "Evolutionary/Mutation/MutationOperator.h"
 #include "Evolutionary/Mutation/ScrambleMutation.h"
-#include <fstream>
-#include <vector>
-#include <limits>
-#include <math.h>
+#include "Model/Edge.h"
+#include "Model/Graph.h"
+#include "Model/Vertex.h"
 
 
 
 using namespace std;
+using namespace GraphModel;
 
+Graph* graph;
 
-
-bool verbose = false;
-string in_file_loc;
-string out_file_loc = "output";
-int init_pop_num = 10; // rozmiar populacji początkowej
-string crossover_oper = "PMX"; //operator krzyżowania
-string mutation_oper = "inversion"; //operator mutacji
-char algorythm_type = 'e';
-int generation_number = 100;
+bool verbose			=	0;
+string in_file_loc		=	"";
+string out_file_loc		=	"output";
+int init_pop_num 		=	{10}; 	// rozmiar populacji początkowej
+string crossover_oper 	=	"PMX"; 	//operator krzyżowania
+string mutation_oper 	=	"inversion"; //operator mutacji
+char algorythm_type 	=	{'e'};
+int generation_number 	=	{100};
 
 // zmienne przechwujące dane pliku wejściowego *.tsp
-string name;
-string node_coord_type;
-string comment;
+int dimension 			= 	{0};
+string name				=	"";
+string node_coord_type	=	"";
+string comment			=	"";
 
-int dimension;
 
-list<Edge*> edgeList;
 
 /**
  * Funkcja ta ma wczytać dane z pliku wejściowego. Na podstawie koordynatów zawartych w pliku wejściowym
  * zostanie utworzona macierz sąsiedztwa - AdjacencyMatrix
  */
-AdjacencyMatrix* readDataFromFile(const char * file_path){
+void readDataFromFile(const char * file_path){
 
 	std::ifstream ifs;
 	ifs.open(file_path);
@@ -67,8 +70,8 @@ AdjacencyMatrix* readDataFromFile(const char * file_path){
 	/* WCZYTANIE METADANYCH Z PLIKU WEJŚCIOWEGO (na podst. dokumentacji tslib)*/
 
 
-	string s;
-	string s_tmp;
+	string s		= 	"";
+	string s_tmp 	=	"";
 	ifs >> s;
 
 
@@ -120,110 +123,68 @@ AdjacencyMatrix* readDataFromFile(const char * file_path){
 
 	// WCZYTYWANIE KOORDYNATÓW DO LISTY
 
-	vector<Coordinate> coordinateVector;
-
-	int a;
+	int a = {0};
 	ifs >> s;
-	double b;
+	double b, c;
 	while((s.compare("EOF")!=0)&&(!ifs.eof())){
-		Coordinate coord;
 
 		a = atoi(s.c_str());
-		coord.num = a;
 
 		ifs >> s;
 		b = atof(s.c_str());
-		coord.x=b;
 
 		ifs >> s;
-		b = atof(s.c_str());
-		coord.y=b;
+		c = atof(s.c_str());
+
+		ifs >> s;
+
+		// dodanie wierzchołka do grafu
+		graph->addVertex(a,b,c);
 
 		if(verbose){
-			cout << "Vertex no.\t"<< coord.num << ":\t";
+			cout << "Vertex no.\t"<< a << ":\t";
 			cout.precision(std::numeric_limits<double>::digits10);
-			cout << "x = " << coord.x << ";\t";
-			cout << "y = " << coord.y << endl;
+			cout << "x = " << b << ";\t";
+			cout << "y = " << c << endl;
 		}
 
-		ifs >> s;
+	} // koniec wczytywania
 
-		coordinateVector.push_back(coord);
-
-	}
 	ifs.close();
 
-	/*OBLICZENIE MACIERZY SĄSIEDZTWA */
 
-	AdjacencyMatrix *adjacencyMatrix;
-	adjacencyMatrix = new AdjacencyMatrix;
-
-	int size = coordinateVector.size();
-
-
-	int i=0, j=0, k=0;
-	for (i=0; i<size; i++){
-		vector<Edge*>* edgeRow = new vector<Edge*>();
-		adjacencyMatrix->push_back(edgeRow);
-	}
-
-
-	for (i=0; i<size; i++){
-		for (j=i; j<size; j++){
-			//Edge* edge = (struct Edge*) malloc (sizeof(struct Edge));
-			Edge* edge = new Edge();
-			double d;
-			double xi = coordinateVector[i].x;
-			double yi = coordinateVector[i].y;
-			double xj = coordinateVector[j].x;
-			double yj = coordinateVector[j].y;
-			if(i==j){
-
-				edge->num=0;
-				edge->value=0;
-				adjacencyMatrix->at(i)->push_back(edge);
-
-			}else{
-
-				k++;
-				d = sqrt(pow((xi-xj),2) + pow((yi-yj),2));
-				edge->value=d;
-				edge->num=k;
-				edgeList.push_back(edge);
-
-				adjacencyMatrix->at(i)->push_back(edge);
-				adjacencyMatrix->at(j)->push_back(edge);
-			}
-
-			//cout << "\t" << adjacencyMatrix->at(i)->at(j)->value;
-
-		}
-		//cout << endl;
-	}
 	// wypisanie zawartości macierzy sąsiedztwa
 
 	if(verbose){
 		cout << endl << "\t ********** ZAWARTOŚĆ MACIERZY SĄSIEDZTWA ***********" << endl;
 
-
-		for(i=0; i<size; i++ ){
-			for(j=0; j<size; j++){
-				cout << adjacencyMatrix->at(i)->at(j)->value << "\t";
+		int size = graph->getVertexCount();
+		Edge* edge;
+		for(int i=0; i<size; i++ ){
+			for(int j=0; j<size; j++){
+				if(i==j){
+					cout << "BRAK\t";
+				}else{
+					edge = graph->getEdge(i,j);
+					cout << edge->getId() << "\t";
+				}
 			}
 			cout << endl;
 		}
 		cout << endl << "\t ********** ZAWARTOŚĆ LISTY KRAWĘDZI ***********" << endl;
+		cout <<	"--------------------------------------------"<< endl;
+		cout << "id | City_A | City_B | distance" << endl;
+		cout <<	"--------------------------------------------"<< endl;
+		for(int i=0; i<graph->getEdgeCount(); i++ ){
+			cout << graph->getEdge(i)->getId() << "\t";
+			cout << graph->getEdge(i)->getCityA()->getId() << "\t";
+			cout << graph->getEdge(i)->getCityB()->getId() << "\t";
+			cout << graph->getEdge(i)->getLength() << endl;
 
-				for(list<Edge*>::iterator iter=edgeList.begin(); iter!=edgeList.end(); iter++ ){
-					cout << (*iter)->value << endl;
-				}
+		}
 	}
 
-
-
-
-	return adjacencyMatrix;
-}
+} // End of read data from file
 
 
 void printUsage(){
@@ -248,7 +209,7 @@ void printUsage(){
 
 int main(int argc, char ** argv){
 
-
+	graph = new GraphModel::Graph();
 	/* przetwarzanie argumentów */
 	if(argc<2){
         printf("\nNiepoprawna liczba argumentów!\n");
@@ -372,12 +333,7 @@ int main(int argc, char ** argv){
         				{
         					printf("Algorytm ewolucyjny\n");
 
-
-
         					EvolutionaryAlgorithm ea;
-
-
-
 
         					//ustawienie parametrów typowych dla algorytmu ewolucyjnego
 
@@ -424,8 +380,8 @@ int main(int argc, char ** argv){
         a->setVerbose(verbose);
 
 
-        AdjacencyMatrix *am = readDataFromFile(in_file_loc.c_str());
-        a->setAdjacencyMatrix(am);
+        readDataFromFile(in_file_loc.c_str());
+        a->setGraph(graph);
 
 
     	// Wydrukowanie parametrów algorytmu
@@ -457,22 +413,8 @@ int main(int argc, char ** argv){
 
         // zapisanie danych do pliku wyjściowego
 
-        // ********** ZWALNIANIE PAMIĘCI **********
 
-        int j;
-        for (i=0; i<am->size(); i++){
-        	vector<Edge*> * edgeRow;
-        	edgeRow = am->at(i);
-        	for (j=i; j<edgeRow->size(); j++){
-        		delete edgeRow->at(j);
-        	}
-        	delete edgeRow;
-
-    	}
-
-
-        delete am;
-
+        delete graph;
         return 0;
 
     } // koniec if(liczba argumentów >2)

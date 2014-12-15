@@ -6,9 +6,10 @@
  */
 
 #include "EdgeCrossover.h"
-#include "../../global.h"
+#include "../../Model/Path.h"
+#include <iostream>
 
-using namespace MyTypes;
+using namespace GraphModel;
 
 EdgeCrossover::EdgeCrossover() {
 	// TODO Auto-generated constructor stub
@@ -19,8 +20,8 @@ EdgeCrossover::~EdgeCrossover() {
 	// TODO Auto-generated destructor stub
 }
 
-Specimen EdgeCrossover::crossover(Specimen P1, Specimen P2){
-	Specimen descendant; //potomek
+Path* EdgeCrossover::crossover(Path* Parent1, Path* Parent2){
+	Path* descendant = NULL; //potomek
 	/*
 	 * Do zaimplementowania: Wykład 5 slajd 15
 	 * */

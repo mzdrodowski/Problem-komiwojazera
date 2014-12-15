@@ -6,12 +6,7 @@
  */
 
 #include "Edge.h"
-
-Edge::Edge() {
-	// TODO Auto-generated constructor stub
-
-}
-
+namespace GraphModel{
 Edge::~Edge() {
 	// TODO Auto-generated destructor stub
 }
@@ -38,3 +33,4 @@ Vertex* Edge::getCityB(){
 double Edge::getLength(){
 	return length;
 }
+}// namespace

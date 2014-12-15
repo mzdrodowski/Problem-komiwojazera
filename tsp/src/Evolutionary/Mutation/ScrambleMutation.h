@@ -14,7 +14,7 @@ class ScrambleMutation: public MutationOperator {
 public:
 	ScrambleMutation();
 	virtual ~ScrambleMutation();
-	virtual void mutate(Specimen* s);
+	virtual void mutate(GraphModel::Path* specimen);
 };
 
 #endif /* EVOLUTIONARY_MUTATION_SCRAMBLEMUTATION_H_ */

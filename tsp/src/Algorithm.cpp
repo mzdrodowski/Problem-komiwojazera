@@ -9,9 +9,12 @@
 #include <cstdlib>
 #include <cstdio>
 
+using namespace GraphModel;
+
+
 Algorithm::Algorithm() {
 	verbose = false;
-	adjacencyMatrix = NULL;
+	graph = NULL;
 
 }
 
@@ -30,7 +33,7 @@ int Algorithm::performAlgorithm(){
 void Algorithm::setVerbose(bool verbose){
 	Algorithm::verbose = verbose;
 }
-void Algorithm::setAdjacencyMatrix(AdjacencyMatrix* am){
 
-	this->adjacencyMatrix = am;
+void Algorithm::setGraph(Graph* graph){
+	Algorithm::graph = graph;
 }

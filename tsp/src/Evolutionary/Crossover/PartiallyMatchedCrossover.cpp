@@ -6,9 +6,9 @@
  */
 
 #include "PartiallyMatchedCrossover.h"
-#include "../../global.h"
+#include "../../Model/Path.h"
 
-using namespace MyTypes;
+using namespace GraphModel;
 
 PartiallyMatchedCrossover::PartiallyMatchedCrossover() {
 	// TODO Auto-generated constructor stub
@@ -19,8 +19,8 @@ PartiallyMatchedCrossover::~PartiallyMatchedCrossover() {
 	// TODO Auto-generated destructor stub
 }
 
-Specimen PartiallyMatchedCrossover::crossover(Specimen P1, Specimen P2){
-	Specimen descendant; //potomek
+Path* PartiallyMatchedCrossover::crossover(Path* Parent1, Path* Parent2){
+	Path* descendant; //potomek
 	/*
 	 * Do zaimplementowania: Wykład 5 slajd 15
 	 * */

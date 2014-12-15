@@ -7,6 +7,8 @@
 
 #ifndef MODEL_VERTEX_H_
 #define MODEL_VERTEX_H_
+
+namespace GraphModel{
 /**
  * Klasa ta reprezentuje wierzchołek grafu czyli miasto. Zawiera
  * współrzędne i identyfikator miesta(wierzchołka).
@@ -14,7 +16,6 @@
 class Vertex {
 
 public:
-	Vertex();
 	Vertex(int id, double x, double y);
 	double getX();
 	double getY();
@@ -25,5 +26,5 @@ private:
 	double y_coord;
 	int id;
 };
-
+}
 #endif /* MODEL_VERTEX_H_ */

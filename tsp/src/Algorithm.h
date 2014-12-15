@@ -8,9 +8,9 @@
 #ifndef ALGORITHM_H_
 #define ALGORITHM_H_
 
-#include "global.h"
 
-using namespace MyTypes;
+#include "Model/Graph.h"
+
 
 class Algorithm {
 public:
@@ -20,9 +20,9 @@ public:
 	int performAlgorithm();
 
 	void setVerbose(bool verbose);
-	void setAdjacencyMatrix(AdjacencyMatrix* am);
+	void setGraph(GraphModel::Graph* graph);
 private:
-	AdjacencyMatrix* adjacencyMatrix;
+	GraphModel::Graph* graph;
 	bool verbose;
 
 };

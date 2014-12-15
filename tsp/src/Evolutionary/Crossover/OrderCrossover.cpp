@@ -6,9 +6,9 @@
  */
 
 #include "OrderCrossover.h"
-#include "../../global.h"
+#include "../../Model/Path.h"
 
-using namespace MyTypes;
+using namespace GraphModel;
 
 OrderCrossover::OrderCrossover() {
 	// TODO Auto-generated constructor stub
@@ -18,9 +18,8 @@ OrderCrossover::OrderCrossover() {
 OrderCrossover::~OrderCrossover() {
 	// TODO Auto-generated destructor stub
 }
-
-Specimen OrderCrossover::crossover(Specimen P1, Specimen P2){
-	Specimen descendant; //potomek
+Path* OrderCrossover::crossover(Path* Parent1, Path* Parent2){
+	Path* descendant; //potomek
 	/*
 	 * Do zaimplementowania: Wykład 5 slajd 15
 	 * */

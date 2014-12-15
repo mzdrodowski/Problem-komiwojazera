@@ -12,9 +12,9 @@
 #include "Crossover/CrossoverOperator.h"
 #include "Mutation/MutationOperator.h"
 #include <list>
-#include "../global.h"
+#include "../Model/Graph.h"
+#include "../Model/Path.h"
 
-using namespace MyTypes;
 
 
 class EvolutionaryAlgorithm: public Algorithm {
@@ -27,11 +27,11 @@ public:
 	void setInitialPopCount(int popCount);
 	void setGenerationNum(int genNum);
 private:
-	int init_pop_cont = 0;
-	int generation_num = 0;
+	int init_pop_cont;
+	int generation_num;
 	CrossoverOperator* crossoverOperator;
 	MutationOperator* mutationOperator;
-	InitialPopulation * initialPopulation;
+	std::list<GraphModel::Path*> initialPopulation;
 
 };
 

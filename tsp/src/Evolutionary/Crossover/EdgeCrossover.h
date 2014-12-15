@@ -9,15 +9,15 @@
 #define EVOLUTIONARY_CROSSOVER_EDGECROSSOVER_H_
 
 #include "CrossoverOperator.h"
-#include "../../global.h"
+#include "../../Model/Path.h"
 
-using namespace MyTypes ;
 
 class EdgeCrossover: public CrossoverOperator {
 public:
 	EdgeCrossover();
 	virtual ~EdgeCrossover();
-	virtual Specimen crossover(Specimen P1, Specimen P2);
+
+	virtual GraphModel::Path* crossover(GraphModel::Path* Parent1, GraphModel::Path* Parent2);
 };
 
 

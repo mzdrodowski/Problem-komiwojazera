@@ -9,15 +9,13 @@
 #define EVOLUTIONARY_MUTATION_INVERSIONMUTATION_H_
 
 #include "MutationOperator.h"
-#include "../../global.h"
-
-using namespace MyTypes;
+#include "../../Model/Path.h"
 
 class InversionMutation: public MutationOperator {
 public:
 	InversionMutation();
 	virtual ~InversionMutation();
-	virtual void mutate(Specimen* s);
+	virtual void mutate(GraphModel::Path* specimen);
 };
 
 

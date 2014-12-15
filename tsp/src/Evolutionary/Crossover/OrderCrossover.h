@@ -9,15 +9,14 @@
 #define EVOLUTIONARY_CROSSOVER_ORDERCROSSOVER_H_
 
 #include "CrossoverOperator.h"
-#include "../../global.h"
+#include "../../Model/Path.h"
 
-using namespace MyTypes;
 
 class OrderCrossover: public CrossoverOperator {
 public:
 	OrderCrossover();
 	virtual ~OrderCrossover();
-	virtual Specimen crossover(Specimen P1, Specimen P2);
+	GraphModel::Path* crossover(GraphModel::Path* Parent1, GraphModel::Path* Parent2);
 };
 
 #endif /* EVOLUTIONARY_CROSSOVER_ORDERCROSSOVER_H_ */

@@ -10,9 +10,11 @@
 
 #include "Vertex.h"
 
+namespace GraphModel{
+
 class Edge {
 public:
-	Edge();
+
 	Edge(int id, Vertex* cityA, Vertex* cityB, double length);
 	int getId();
 	Vertex* getCityA();
@@ -25,5 +27,7 @@ private:
 	Vertex* cityB;
 	double length;
 };
+
+} // namespace
 
 #endif /* MODEL_EDGE_H_ */
