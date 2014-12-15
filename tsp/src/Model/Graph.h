@@ -19,7 +19,7 @@ namespace GraphModel{
 
 class Graph {
 public:
-	Graph();
+	static Graph* getInstance();
 	int getEdgeCount();
 	int getVertexCount();
 	/**
@@ -29,10 +29,17 @@ public:
 	void addVertex(int id, double x, double y);
 	Vertex* getVertex(int id);
 	Edge* getEdge(int city_A, int city_B);
-	Edge* getEdge(int index);
+	/**
+	 * Zwraca wskaźnik do wierzchołka o zadanym id
+	 */
+	Edge* getEdge(int id);
 	virtual ~Graph();
 
 private:
+	Graph();
+	Graph(Graph const&);
+	Graph& operator=(Graph const&);
+	static Graph* instance;
 	std::vector<Vertex*> vertexVector;
 	std::vector<Edge*> edgeVector;
 	std::vector< std::vector<Edge*>* > adjacencyMatrix;

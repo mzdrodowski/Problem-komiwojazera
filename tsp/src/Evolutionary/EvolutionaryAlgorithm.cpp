@@ -6,6 +6,10 @@
  */
 
 #include "EvolutionaryAlgorithm.h"
+#include "../RandomPathGenerator.h"
+
+using namespace std;
+using namespace GraphModel;
 
 EvolutionaryAlgorithm::EvolutionaryAlgorithm() {
 	crossoverOperator = NULL;
@@ -26,6 +30,9 @@ EvolutionaryAlgorithm::~EvolutionaryAlgorithm() {
 
 int EvolutionaryAlgorithm::performAlgorithm(){
 
+	cout << "rozpoczęcie wykonywania algorytmu" << endl;
+	Path* specimen = RandomPathGenerator::getInstance()->generatePath();
+	delete specimen;
     // inicjalizacja populacji za pomocą losowych rozwiązań;
    // a.initializePopulation();
     // ocena każdego kandydata

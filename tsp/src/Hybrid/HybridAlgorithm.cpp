@@ -8,11 +8,13 @@
 #include "HybridAlgorithm.h"
 
 HybridAlgorithm::HybridAlgorithm() {
-	// TODO Auto-generated constructor stub
 
 }
 
 HybridAlgorithm::~HybridAlgorithm() {
-	// TODO Auto-generated destructor stub
+
 }
 
+int HybridAlgorithm::performAlgorithm(){
+	return 0;
+}

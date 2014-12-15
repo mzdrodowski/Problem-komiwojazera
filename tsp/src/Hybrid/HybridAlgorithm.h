@@ -12,6 +12,7 @@
 class HybridAlgorithm: public Algorithm {
 public:
 	HybridAlgorithm();
+	virtual int performAlgorithm();
 	virtual ~HybridAlgorithm();
 };
 

@@ -13,6 +13,7 @@ class HeuristicAlgorithm: public Algorithm{
 public:
 	HeuristicAlgorithm();
 	virtual ~HeuristicAlgorithm();
+	virtual int performAlgorithm();
 };
 
 #endif /* HEURISTICALGORITHM_H_ */

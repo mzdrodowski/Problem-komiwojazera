@@ -16,3 +16,6 @@ HeuristicAlgorithm::~HeuristicAlgorithm() {
 	// TODO Auto-generated destructor stub
 }
 
+int HeuristicAlgorithm::performAlgorithm(){
+	return 0;
+}

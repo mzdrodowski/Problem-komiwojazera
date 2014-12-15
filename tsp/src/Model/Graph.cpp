@@ -10,8 +10,17 @@
 
 using namespace std;
 
+
 namespace GraphModel{
 
+Graph* Graph::instance = NULL;
+
+Graph* Graph::getInstance(){
+	if(Graph::instance==NULL){
+		instance = new Graph();
+	}
+	return instance;
+}
 
 Graph::Graph() {
 	vertexCount = 0;
@@ -60,8 +69,11 @@ void Graph::addVertex(int id, double x, double y){
 }
 Vertex* Graph::getVertex(int id){
 
-	return vertexVector.at(id);
+	return vertexVector.at(id-1);
 }
+/**
+ * zwraca krawędź po identyfikatorach wierzchołków
+ */
 Edge* Graph::getEdge(int idVertexA, int idVertexB){
 	if((idVertexA > vertexCount) || (idVertexB > vertexCount)){
 		cout << "Graph: niepoprawne numery wierzchołków" << endl;
@@ -75,11 +87,11 @@ Edge* Graph::getEdge(int idVertexA, int idVertexB){
 	}else{
 		cout << "Graph: wierzchołek nie ma drogi do samego siebie" << endl;
 	}
-	return adjacencyMatrix[idVertexA]->at(idVertexB);
+	return adjacencyMatrix[idVertexA-1]->at(idVertexB-1);
 }
 
-Edge* Graph::getEdge(int index){
-	return edgeVector.at(index);
+Edge* Graph::getEdge(int id){
+	return edgeVector.at(id-1);
 }
 
 int Graph::getEdgeCount(){

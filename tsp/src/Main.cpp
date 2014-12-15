@@ -27,13 +27,14 @@ wejściowych itp.
 #include "Model/Edge.h"
 #include "Model/Graph.h"
 #include "Model/Vertex.h"
+#include "RandomPathGenerator.h"
 
 
 
 using namespace std;
 using namespace GraphModel;
 
-Graph* graph;
+
 
 bool verbose			=	0;
 string in_file_loc		=	"";
@@ -139,7 +140,7 @@ void readDataFromFile(const char * file_path){
 		ifs >> s;
 
 		// dodanie wierzchołka do grafu
-		graph->addVertex(a,b,c);
+		Graph::getInstance()->addVertex(a,b,c);
 
 		if(verbose){
 			cout << "Vertex no.\t"<< a << ":\t";
@@ -158,14 +159,14 @@ void readDataFromFile(const char * file_path){
 	if(verbose){
 		cout << endl << "\t ********** ZAWARTOŚĆ MACIERZY SĄSIEDZTWA ***********" << endl;
 
-		int size = graph->getVertexCount();
+		int size = Graph::getInstance()->getVertexCount();
 		Edge* edge;
-		for(int i=0; i<size; i++ ){
-			for(int j=0; j<size; j++){
+		for(int i=1; i<=size; i++ ){
+			for(int j=1; j<=size; j++){
 				if(i==j){
 					cout << "BRAK\t";
 				}else{
-					edge = graph->getEdge(i,j);
+					edge = Graph::getInstance()->getEdge(i,j);
 					cout << edge->getId() << "\t";
 				}
 			}
@@ -175,11 +176,12 @@ void readDataFromFile(const char * file_path){
 		cout <<	"--------------------------------------------"<< endl;
 		cout << "id | City_A | City_B | distance" << endl;
 		cout <<	"--------------------------------------------"<< endl;
-		for(int i=0; i<graph->getEdgeCount(); i++ ){
-			cout << graph->getEdge(i)->getId() << "\t";
-			cout << graph->getEdge(i)->getCityA()->getId() << "\t";
-			cout << graph->getEdge(i)->getCityB()->getId() << "\t";
-			cout << graph->getEdge(i)->getLength() << endl;
+		for(int i=1; i<=(Graph::getInstance()->getEdgeCount()); i++ ){
+			Edge* e = Graph::getInstance()->getEdge(i);
+			cout << e->getId() << "\t";
+			cout << e->getCityA()->getId() << "\t";
+			cout << e->getCityB()->getId() << "\t";
+			cout << e->getLength() << endl;
 
 		}
 	}
@@ -209,7 +211,7 @@ void printUsage(){
 
 int main(int argc, char ** argv){
 
-	graph = new GraphModel::Graph();
+
 	/* przetwarzanie argumentów */
 	if(argc<2){
         printf("\nNiepoprawna liczba argumentów!\n");
@@ -321,10 +323,11 @@ int main(int argc, char ** argv){
             }
         } //koniec pętli przeglądającej argumenty
 
+/* USTAWIENIE WYBORU ALGORYTMU*/
 
+        RandomPathGenerator::getInstance()->setVerbose(verbose);
 
-
-
+        readDataFromFile(in_file_loc.c_str());
 
         Algorithm *a;
 
@@ -333,28 +336,28 @@ int main(int argc, char ** argv){
         				{
         					printf("Algorytm ewolucyjny\n");
 
-        					EvolutionaryAlgorithm ea;
 
+        					a = new EvolutionaryAlgorithm();
         					//ustawienie parametrów typowych dla algorytmu ewolucyjnego
+        					EvolutionaryAlgorithm* ea = (EvolutionaryAlgorithm*)a;
 
-        					ea.setInitialPopCount(init_pop_num);
-        					ea.setGenerationNum(generation_number);
+        					ea->setInitialPopCount(init_pop_num);
+        					ea->setGenerationNum(generation_number);
         					// USTAWIENIE OPERATORA KRZYŻOWANIA
         					if(strcmp(crossover_oper.c_str(), "PMX")==0){
 
-                                ea.setCrossoverOperator(new PartiallyMatchedCrossover());
+                                ea->setCrossoverOperator(new PartiallyMatchedCrossover());
                             }else if (strcmp(crossover_oper.c_str(), "OX")==0){
-                            	ea.setCrossoverOperator(new OrderCrossover());
+                            	ea->setCrossoverOperator(new OrderCrossover());
                             }else if (strcmp(crossover_oper.c_str(), "EX")==0){
-                            	ea.setCrossoverOperator(new EdgeCrossover());
+                            	ea->setCrossoverOperator(new EdgeCrossover());
                             }
         					// USTAWIENIE OPERATORA MUTACJI
         					if(strcmp(mutation_oper.c_str(), "inversion")==0){
-                                ea.setMutationOperator(new InversionMutation());
+                                ea->setMutationOperator(new InversionMutation());
                             }else if (strcmp(mutation_oper.c_str(), "scramble")==0){
-                            	ea.setMutationOperator(new ScrambleMutation());
+                            	ea->setMutationOperator(new ScrambleMutation());
                             }
-        					a=&ea;
 
         				}	// algorytm ewolucyjny
         					break;
@@ -380,9 +383,9 @@ int main(int argc, char ** argv){
         a->setVerbose(verbose);
 
 
-        readDataFromFile(in_file_loc.c_str());
-        a->setGraph(graph);
 
+        a->setGraph(Graph::getInstance());
+        a->performAlgorithm();
 
     	// Wydrukowanie parametrów algorytmu
         if(verbose){
@@ -400,7 +403,7 @@ int main(int argc, char ** argv){
         	cout << "\tLiczba węzłów(miast):\t" << dimension << endl;
         }
 
-        a->performAlgorithm();
+
 
 
 
@@ -414,7 +417,7 @@ int main(int argc, char ** argv){
         // zapisanie danych do pliku wyjściowego
 
 
-        delete graph;
+        delete a;
         return 0;
 
     } // koniec if(liczba argumentów >2)

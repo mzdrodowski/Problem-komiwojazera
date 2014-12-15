@@ -17,7 +17,7 @@ public:
 	Algorithm();
 	virtual ~Algorithm();
 
-	int performAlgorithm();
+	virtual int performAlgorithm()=0;
 
 	void setVerbose(bool verbose);
 	void setGraph(GraphModel::Graph* graph);
