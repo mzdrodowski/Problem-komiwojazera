@@ -62,7 +62,7 @@ vector<Path*> RouletteSelection::selectParents(vector<Path* >* population){
 
 		if(Parameters::getInstance()->isVerbose()){
 			cout << " " << p->getId();
-			cout << "  długość odcinka: " << p->getLenght() ;
+			cout << "  długość ścieżki: " << p->getLenght() ;
 			cout << "  przystosowanie: " << adj << endl;
 		}
 	}
@@ -88,10 +88,7 @@ vector<Path*> RouletteSelection::selectParents(vector<Path* >* population){
 	breadSize = (population->size())*2;
 	double d =0;
 
-
-
 	for ( int i=0; i<breadSize; i++){
-
 
 		d=((double) rand()/(double)RAND_MAX);
 
@@ -101,8 +98,8 @@ vector<Path*> RouletteSelection::selectParents(vector<Path* >* population){
 			double tmp = segmentDeque.at(j);
 			if(d<tmp){
 				cout << "  wylosowano:  "<< d << " z przedziału: " << j <<endl;
+				outcome.push_back(population->at(j));
 				break;
-				population->at(j);
 			}
 			j++;
 		}
@@ -111,7 +108,12 @@ vector<Path*> RouletteSelection::selectParents(vector<Path* >* population){
 
 	/*	Test zsumowanie wszystkich elementów czy  */
 	if(Parameters::getInstance()->isVerbose()){
-		cout << "Ruletka";
+		cout << endl<< "Do populacji krzyżowania wybrano osobniki:"<<endl;
+		int s =outcome.size();
+		for(int i=0; i<s;i++){
+			Path* p = outcome.at(i);
+			cout << "  " <<p->getId() << "  " <<p->getLenght() <<endl;
+		}
 	}
 
 
