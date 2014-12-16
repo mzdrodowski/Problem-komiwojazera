@@ -28,8 +28,10 @@ public:
 	void setMutationOperator(MutationOperator* mo);
 	void setInitialPopulationCount(int popCount);
 	void setGenerationCount(int genCount);
+	static	GraphModel::Path* bestSpecimen;
+
 private:
-	std::list<GraphModel::Path*> initializePopulation(int count);
+	std::vector<GraphModel::Path*> initializePopulation(int count);
 	bool terminationConditionCheck();
 	int init_pop_count;
 	int generation_count;
@@ -37,10 +39,11 @@ private:
 	ParentSelection* parentSelection;
 	CrossoverOperator* crossoverOperator;
 	MutationOperator* mutationOperator;
-	std::list<GraphModel::Path*> initialPopulation;
-	std::list<GraphModel::Path*> breedingPopulation;
-	std::list<GraphModel::Path*> offspringPopulation;
-	std::list<GraphModel::Path*> mutatedPopulation;
+	std::vector<GraphModel::Path*> initialPopulation;
+	std::vector<GraphModel::Path*> breedingPopulation;
+	std::vector<GraphModel::Path*> offspringPopulation;
+	std::vector<GraphModel::Path*> mutatedPopulation;
+
 };
 
 #endif /* EVOLUTIONARYALGORITHM_H_ */

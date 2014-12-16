@@ -8,6 +8,7 @@
 #ifndef EVOLUTIONARY_CROSSOVEROPERATOR_H_
 #define EVOLUTIONARY_CROSSOVEROPERATOR_H_
 #include "../../Model/Path.h"
+#include <vector>
 
 
 
@@ -15,7 +16,7 @@ class CrossoverOperator {
 
 public:
 	CrossoverOperator();
-	virtual std::list<GraphModel::Path* > performMating(std::list<GraphModel::Path* > population);
+	virtual std::vector<GraphModel::Path* > performMating(std::vector<GraphModel::Path* > population);
 	virtual ~CrossoverOperator();
 
 	virtual GraphModel::Path* crossover(GraphModel::Path* Parent1, GraphModel::Path* Parent2) = 0;

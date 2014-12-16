@@ -17,21 +17,26 @@ namespace GraphModel{
  */
 class Path {
 public:
-	Path(int path_size);
+	Path(int path_size, int id);
 	virtual ~Path();
 
 	void addVertex(Vertex* vertex);
 	bool vertexExitst(int id);
+	/**
+	 * Zwraca całkowitą długość ścieżki
+	 */
 	double getLenght();
 	int getCurrentSize();
 	Vertex* getVertex(int num);
 	std::list<Vertex*> getVertexList();
+	int getId();
 
 private:
 	std::list<Vertex*> vertexList;
 	double lenght;
 	int path_size;
 	int current_size;
+	int id;
 
 };
 

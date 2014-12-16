@@ -21,6 +21,7 @@ RandomPathGenerator* RandomPathGenerator::instance = NULL;
 RandomPathGenerator::RandomPathGenerator() {
 
 	verbose = 0;
+	pathCount = 1;
 
 
 }
@@ -38,8 +39,8 @@ RandomPathGenerator* RandomPathGenerator::getInstance(){
 
 GraphModel::Path* RandomPathGenerator::generatePath(){
 
-	Path* path = new Path(Graph::getInstance()->getVertexCount());
-
+	Path* path = new Path(Graph::getInstance()->getVertexCount(), pathCount);
+	pathCount++;
 	int size = Graph::getInstance()->getVertexCount();
 	path->addVertex(Graph::getInstance()->getVertex(1));
 

@@ -9,12 +9,12 @@
 #define EVOLUTIONARY_SELECTION_ROULETTESELECTION_H_
 
 #include "ParentSelection.h"
-
+#include "../../Model/Path.h"
 class RouletteSelection: public ParentSelection {
 public:
 	RouletteSelection();
 	virtual ~RouletteSelection();
-	virtual std::list<GraphModel::Path*> selectParents(std::list< GraphModel::Path* > population);
+	virtual std::vector<GraphModel::Path*> selectParents(std::vector< GraphModel::Path* >* population);
 };
 
 #endif /* EVOLUTIONARY_SELECTION_ROULETTESELECTION_H_ */

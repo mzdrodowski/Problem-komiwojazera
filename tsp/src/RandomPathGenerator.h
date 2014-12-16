@@ -23,6 +23,7 @@ private:
 	RandomPathGenerator& operator=(RandomPathGenerator const&);
 	static RandomPathGenerator* instance;
 	bool verbose;
+	int pathCount;
 };
 
 

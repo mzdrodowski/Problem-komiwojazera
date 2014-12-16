@@ -12,10 +12,11 @@ using namespace std;
 
 namespace GraphModel{
 
-Path::Path(int path_size) {
+Path::Path(int path_size, int id) {
 	Path::lenght		=	0;
 	Path::path_size 	=	path_size;
 	Path::current_size	=	0;
+	Path::id 			=	id;
 }
 
 Path::~Path() {
@@ -81,6 +82,8 @@ bool Path::vertexExitst(int id){
 	}
 	return exists;
 }
-
+int Path::getId(){
+	return id;
+}
 
 }//namespace GraphModel

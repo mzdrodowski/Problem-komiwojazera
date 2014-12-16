@@ -6,6 +6,7 @@
  */
 
 #include "MutationOperator.h"
+#include <vector>
 
 using namespace std;
 using namespace GraphModel;
@@ -19,7 +20,7 @@ MutationOperator::~MutationOperator() {
 	// TODO Auto-generated destructor stub
 }
 
-std::list<GraphModel::Path*> MutationOperator::performMutation(std::list<GraphModel::Path*> population){
-	list <Path *> list;
+std::vector<GraphModel::Path*> MutationOperator::performMutation(std::vector<GraphModel::Path*> population){
+	vector <Path *> list;
 	return list;
 }

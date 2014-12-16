@@ -7,17 +7,24 @@
 
 #include "EvolutionaryAlgorithm.h"
 #include "../RandomPathGenerator.h"
+#include "../Model/Path.h"
+#include <list>
 
 using namespace std;
 using namespace GraphModel;
 
-EvolutionaryAlgorithm::EvolutionaryAlgorithm() {
-	crossoverOperator		= NULL;
-	mutationOperator		= NULL;
-	generation_count 		= 0;
-	init_pop_count 			= 0;
-	current_population_num	= 0;
+
+GraphModel::Path* EvolutionaryAlgorithm::bestSpecimen=NULL;
+
+
+EvolutionaryAlgorithm::EvolutionaryAlgorithm(){
+	crossoverOperator		= 	NULL;
+	mutationOperator		= 	NULL;
+	generation_count 		= 	0;
+	init_pop_count 			= 	0;
+	current_population_num	= 	0;
 	parentSelection = new RouletteSelection();
+
 }
 
 EvolutionaryAlgorithm::~EvolutionaryAlgorithm() {
@@ -44,9 +51,14 @@ int EvolutionaryAlgorithm::performAlgorithm(){
     while(!terminationConditionCheck()){
     	cout<< endl<< endl<<"Pokolenie nr " << current_population_num << endl;
         //wybór rodziców
-    	breedingPopulation = parentSelection->selectParents(initialPopulation);
+    	breedingPopulation = parentSelection->selectParents(&initialPopulation);
         //Kojarzenie rodziców w pary i krzyżowanie par rodziców;
 
+    	//wypisanie najlepszego osobnika w populacji
+      	if(bestSpecimen==NULL){
+    	cout<< "Najlepszy osobnik w populacji:"<<
+        			bestSpecimen->getId() << endl << endl;
+      	}
     	offspringPopulation = crossoverOperator->performMating(breedingPopulation);
         //mutacja  potomstwa;
     	mutatedPopulation = mutationOperator->performMutation(offspringPopulation);
@@ -54,10 +66,13 @@ int EvolutionaryAlgorithm::performAlgorithm(){
 
 
 
-    	/* zwalnianie pamięci dla ścierzek - osobników */
-        for(it=initialPopulation.begin();it!=initialPopulation.end(); ++it){
-        	delete (*it);
+    	/* zwalnianie pamięci dla ścierzek - osobników starej populacji*/
+        while(initialPopulation.size()!=0){
+        	delete initialPopulation.at(initialPopulation.size()-1);
+        	initialPopulation.pop_back();
         }
+
+
         /*mutacja powstała w wyniku krzyżowania i mutacji
     	// zastępuje oryginalną populację*/
 
@@ -96,9 +111,9 @@ void EvolutionaryAlgorithm::setGenerationCount(int genCount){
 /**
  * Inicjalizacja populacji początkowej
  */
-std::list<GraphModel::Path*> EvolutionaryAlgorithm::initializePopulation(int count){
+std::vector<GraphModel::Path*> EvolutionaryAlgorithm::initializePopulation(int count){
 
-	list<Path*> population;
+	vector<Path*> population;
 	for(int i=0; i<count; i++){
 		population.push_back(RandomPathGenerator::getInstance()->generatePath());
 	}

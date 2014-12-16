@@ -9,13 +9,14 @@
 #define EVOLUTIONARY_MUTATIONOPERATOR_H_
 
 #include "../../Model/Path.h"
+#include <vector>
 
 
 class MutationOperator {
 public:
 	MutationOperator();
 	virtual ~MutationOperator();
-	virtual std::list<GraphModel::Path*> performMutation(std::list<GraphModel::Path*> population);
+	virtual std::vector<GraphModel::Path*> performMutation(std::vector<GraphModel::Path*> population);
 	virtual void mutate(GraphModel::Path* specimen) = 0;
 };
 

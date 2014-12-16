@@ -28,6 +28,7 @@ wejściowych itp.
 #include "Model/Graph.h"
 #include "Model/Vertex.h"
 #include "RandomPathGenerator.h"
+#include "Parameters.h"
 
 
 
@@ -230,6 +231,7 @@ int main(int argc, char ** argv){
                 switch(c){
                     case 'v'    :
                         verbose = true;
+                        Parameters::getInstance()->setVerbose(true);
                     break;
                     case 'o'    :
                         if(argc>=(i+2)){

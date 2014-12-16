@@ -6,6 +6,7 @@
  */
 
 #include "CrossoverOperator.h"
+#include <vector>
 
 using namespace std;
 using namespace GraphModel;
@@ -19,8 +20,8 @@ CrossoverOperator::~CrossoverOperator() {
 	// TODO Auto-generated destructor stub
 }
 
-std::list<GraphModel::Path* > CrossoverOperator::performMating(std::list<GraphModel::Path* > population){
-	list<Path* > path;
+std::vector<GraphModel::Path* > CrossoverOperator::performMating(std::vector<GraphModel::Path* > population){
+	vector<Path* > path;
 
 	return path;
 }
