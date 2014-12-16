@@ -10,11 +10,14 @@
 #include "../../Model/Path.h"
 
 
+
 class CrossoverOperator {
 
 public:
 	CrossoverOperator();
+	virtual std::list<GraphModel::Path* > performMating(std::list<GraphModel::Path* > population);
 	virtual ~CrossoverOperator();
+
 	virtual GraphModel::Path* crossover(GraphModel::Path* Parent1, GraphModel::Path* Parent2) = 0;
 };
 

@@ -14,6 +14,8 @@
 #include <list>
 #include "../Model/Graph.h"
 #include "../Model/Path.h"
+#include "Selection/ParentSelection.h"
+#include "Selection/RouletteSelection.h"
 
 
 
@@ -24,15 +26,21 @@ public:
 	int performAlgorithm();
 	void setCrossoverOperator(CrossoverOperator * co);
 	void setMutationOperator(MutationOperator* mo);
-	void setInitialPopCount(int popCount);
-	void setGenerationNum(int genNum);
+	void setInitialPopulationCount(int popCount);
+	void setGenerationCount(int genCount);
 private:
-	int init_pop_cont;
-	int generation_num;
+	std::list<GraphModel::Path*> initializePopulation(int count);
+	bool terminationConditionCheck();
+	int init_pop_count;
+	int generation_count;
+	int current_population_num;
+	ParentSelection* parentSelection;
 	CrossoverOperator* crossoverOperator;
 	MutationOperator* mutationOperator;
 	std::list<GraphModel::Path*> initialPopulation;
-
+	std::list<GraphModel::Path*> breedingPopulation;
+	std::list<GraphModel::Path*> offspringPopulation;
+	std::list<GraphModel::Path*> mutatedPopulation;
 };
 
 #endif /* EVOLUTIONARYALGORITHM_H_ */

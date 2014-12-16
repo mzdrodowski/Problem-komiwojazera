@@ -42,8 +42,8 @@ string out_file_loc		=	"output";		//
 char algorythm_type 	=	{'e'};			// rodzaj altorytmu e ewolucyjny h heurystyczny, y hybrydowy
 
 /*	PARAMETRY ALGORYTMU EWOLUCYJNEGO */
-int generation_number 	=	{100};			// liczba pokoleń
-int init_pop_num 		=	{10}; 			// ilość osobników populacji początkowej
+int generation_number 	=	{10};			// liczba pokoleń
+int init_pop_num 		=	{6}; 			// ilość osobników populacji początkowej
 string crossover_oper 	=	"PMX"; 			// typ operatora krzyżowania
 string mutation_oper 	=	"inversion";	// operator mutacji
 
@@ -203,8 +203,8 @@ void printUsage(){
 	printf(" -o <plik wynikowy> \t\t nazwa pliku wynikowego \n");
 	printf(" -v \t\t\t\t wypisanie przebiegu działania programu\n");
 	printf("\n");
-	printf(" -l <number> \t\t\t liczba osobników w populacji początkowej - domyślnie 10\n");
-	printf(" -p <number>\t\t\t liczba pokoleń (generacji) domyślnie 100\n");
+	printf(" -l <number> \t\t\t liczba osobników w populacji początkowej - domyślnie 6\n");
+	printf(" -p <number>\t\t\t liczba pokoleń (generacji) domyślnie 10\n");
 	printf(" -r [=<oper_krzyżowania>]\t operator krzyżowania(rekombinacji): 'PMX', 'OX' lub 'EX'\n");
 	printf(" -m [=<oper_mutacji>]\t\t operator mutacji: 'inversion', 'scramble'\n");
 
@@ -379,6 +379,9 @@ int main(int argc, char ** argv){
 
         Algorithm *a;
 
+
+        /* USTAWNIENIE PARAMETRÓW ALGORYTMU W ZALEŻNOŚCI OD JEGO RODZAJU*/
+
         switch(algorythm_type)	{
         				case 'e'	:
         				{
@@ -386,9 +389,9 @@ int main(int argc, char ** argv){
         					a = new EvolutionaryAlgorithm();
         					//ustawienie parametrów typowych dla algorytmu ewolucyjnego
         					EvolutionaryAlgorithm* ea = (EvolutionaryAlgorithm*)a;
+        					ea->setInitialPopulationCount(init_pop_num);
+        					ea->setGenerationCount(generation_number);
 
-        					ea->setInitialPopCount(init_pop_num);
-        					ea->setGenerationNum(generation_number);
         					// USTAWIENIE OPERATORA KRZYŻOWANIA
         					if(strcmp(crossover_oper.c_str(), "PMX")==0){
 
@@ -427,10 +430,9 @@ int main(int argc, char ** argv){
         } // switch algorithm type
 
         a->setVerbose(verbose);
-
-
-
         a->setGraph(Graph::getInstance());
+
+
         a->performAlgorithm();
 
 

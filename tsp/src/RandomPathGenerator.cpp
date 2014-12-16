@@ -45,7 +45,7 @@ GraphModel::Path* RandomPathGenerator::generatePath(){
 
 	vector<Vertex*> vvec = Graph::getInstance()->getVertexVector();
 	vvec.erase(vvec.begin()); // usuwamy zerowy czyli pierwszy bo od niego będziemy zaczynać
-	srand(time(0));
+
 	int number = {0};
 	int remain_elems = {0};
 	for (int i=1; i<size; i++){
@@ -53,7 +53,7 @@ GraphModel::Path* RandomPathGenerator::generatePath(){
 
 		remain_elems = vvec.size();
 		//cout<< "Rozmiar vektora =" << remain_elems <<endl;
-
+		//srand(time(0)); //srand powodowało te same sekwencje cały czas
 		number = rand()%remain_elems;
 		//do{
 			//number = rand()%size+1;
@@ -77,15 +77,13 @@ GraphModel::Path* RandomPathGenerator::generatePath(){
 		//cout<< "Całkowita dotychczasowa długość: " << path->getLenght()<< endl << endl;
 	}
 	if(verbose){
-		cout << "*********************************************"<< endl
-				<<"********** Wylosowano ścieżkę *********"<< endl
-				<<"**********************************************"<< endl;
+		cout << "  - wylosowano:  ";
 		list<Vertex*> vl = path->getVertexList();
 		list<Vertex*>::iterator it;
 		for (it=vl.begin(); it != vl.end(); it++){
 			cout << (*it)->getId() << " --> ";
 		}
-		cout <<"1"<< endl << "Całkowita długość tej ścieżki:\t" << path->getLenght() <<endl;
+		cout <<"1"<< "\t\tDługość: " << path->getLenght() <<endl;
 
 	}
 

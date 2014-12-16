@@ -20,6 +20,8 @@ EdgeCrossover::~EdgeCrossover() {
 	// TODO Auto-generated destructor stub
 }
 
+
+
 Path* EdgeCrossover::crossover(Path* Parent1, Path* Parent2){
 	Path* descendant = NULL; //potomek
 	/*
