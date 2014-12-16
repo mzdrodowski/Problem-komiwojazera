@@ -203,7 +203,7 @@ void printUsage(){
 	printf(" -o <plik wynikowy> \t\t nazwa pliku wynikowego \n");
 	printf(" -v \t\t\t\t wypisanie przebiegu działania programu\n");
 	printf("\n");
-	printf(" -l <number> \t\t\t liczba osobników w populacji początkowej\n");
+	printf(" -l <number> \t\t\t liczba osobników w populacji początkowej - domyślnie 10\n");
 	printf(" -p <number>\t\t\t liczba pokoleń (generacji) domyślnie 100\n");
 	printf(" -r [=<oper_krzyżowania>]\t operator krzyżowania(rekombinacji): 'PMX', 'OX' lub 'EX'\n");
 	printf(" -m [=<oper_mutacji>]\t\t operator mutacji: 'inversion', 'scramble'\n");
@@ -333,7 +333,7 @@ int main(int argc, char ** argv){
         RandomPathGenerator::getInstance()->setVerbose(verbose);
 
 
-        if(verbose){
+        /* WYDRUKOWANIE INFORMACJI O PRZETWARZANYM ZBIORZE I WYBRANYCH PARAMETRACH */
 
         		cout << endl;
         	    cout << "\nParametry programu:" << endl << endl;
@@ -342,7 +342,7 @@ int main(int argc, char ** argv){
 
         		switch(algorythm_type){
         			case 'h'	:
-        				cout << "Algorytm heurystyczny";
+        				cout << "  Rodzaj algorytmu:\t\t\t\t:\tAlgorytm Heurystyczny"<< endl<<endl;
         				break;
         			case 'e'	:
         				cout << "  Rodzaj algorytmu:\t\t\t\t:\tAlgorytm ewolucyjny"<< endl<<endl;
@@ -352,7 +352,7 @@ int main(int argc, char ** argv){
         				printf("  Operator mutacji\t\t\t\t:\t%s\n", mutation_oper.c_str());
         				break;
         			case 'y'	:
-        				cout << "Algorytm hybrydowy";
+        				cout << "  Rodzaj algorytmu:\t\t\t\t:\tAlgorytm hybrydowy"<< endl<<endl;
         				break;
         			default	:
         				break;
@@ -362,7 +362,7 @@ int main(int argc, char ** argv){
             	printf("  Plik wyjściowy\t\t\t\t:\t%s\n", out_file_loc.c_str());
 
             	cout << endl << endl;
-        }
+
 
         readDataFromFile(in_file_loc.c_str());
 
