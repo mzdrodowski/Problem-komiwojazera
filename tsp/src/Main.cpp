@@ -35,17 +35,19 @@ using namespace std;
 using namespace GraphModel;
 
 
-
+/* PARAMETRY WSPÓLNE DLA WSZYSTKICH RODZAJÓŒ ALGORYTMÓW */
 bool verbose			=	0;
 string in_file_loc		=	"";
-string out_file_loc		=	"output";
-int init_pop_num 		=	{10}; 	// rozmiar populacji początkowej
-string crossover_oper 	=	"PMX"; 	//operator krzyżowania
-string mutation_oper 	=	"inversion"; //operator mutacji
-char algorythm_type 	=	{'e'};
-int generation_number 	=	{100};
+string out_file_loc		=	"output";		//
+char algorythm_type 	=	{'e'};			// rodzaj altorytmu e ewolucyjny h heurystyczny, y hybrydowy
 
-// zmienne przechwujące dane pliku wejściowego *.tsp
+/*	PARAMETRY ALGORYTMU EWOLUCYJNEGO */
+int generation_number 	=	{100};			// liczba pokoleń
+int init_pop_num 		=	{10}; 			// ilość osobników populacji początkowej
+string crossover_oper 	=	"PMX"; 			// typ operatora krzyżowania
+string mutation_oper 	=	"inversion";	// operator mutacji
+
+/* zmienne przechowujące  metadane pliku wejściowego */
 int dimension 			= 	{0};
 string name				=	"";
 string node_coord_type	=	"";
@@ -127,6 +129,10 @@ void readDataFromFile(const char * file_path){
 	int a = {0};
 	ifs >> s;
 	double b, c;
+	if(verbose){
+		cout << "Lista wierzchołków:" << endl << endl;
+		cout.precision(std::numeric_limits<double>::digits10);
+	}
 	while((s.compare("EOF")!=0)&&(!ifs.eof())){
 
 		a = atoi(s.c_str());
@@ -143,8 +149,7 @@ void readDataFromFile(const char * file_path){
 		Graph::getInstance()->addVertex(a,b,c);
 
 		if(verbose){
-			cout << "Vertex no.\t"<< a << ":\t";
-			cout.precision(std::numeric_limits<double>::digits10);
+			cout << "  Wierzch nr\t"<< a << "\t:\t";
 			cout << "x = " << b << ";\t";
 			cout << "y = " << c << endl;
 		}
@@ -157,11 +162,12 @@ void readDataFromFile(const char * file_path){
 	// wypisanie zawartości macierzy sąsiedztwa
 
 	if(verbose){
-		cout << endl << "\t ********** ZAWARTOŚĆ MACIERZY SĄSIEDZTWA ***********" << endl;
+		cout << endl << endl << "Macierz sąsiedztwa:" << endl <<endl;
 
 		int size = Graph::getInstance()->getVertexCount();
 		Edge* edge;
 		for(int i=1; i<=size; i++ ){
+			cout << "  ";
 			for(int j=1; j<=size; j++){
 				if(i==j){
 					cout << "BRAK\t";
@@ -172,13 +178,12 @@ void readDataFromFile(const char * file_path){
 			}
 			cout << endl;
 		}
-		cout << endl << "\t ********** ZAWARTOŚĆ LISTY KRAWĘDZI ***********" << endl;
-		cout <<	"--------------------------------------------"<< endl;
-		cout << "id | City_A | City_B | distance" << endl;
-		cout <<	"--------------------------------------------"<< endl;
+		cout << endl << endl << "Lista krawędzi:" << endl <<endl;
+		cout << "  id | City_A | City_B | distance" << endl;
+
 		for(int i=1; i<=(Graph::getInstance()->getEdgeCount()); i++ ){
 			Edge* e = Graph::getInstance()->getEdge(i);
-			cout << e->getId() << "\t";
+			cout << "   "<<e->getId() << "\t";
 			cout << e->getCityA()->getId() << "\t";
 			cout << e->getCityB()->getId() << "\t";
 			cout << e->getLength() << endl;
@@ -327,15 +332,56 @@ int main(int argc, char ** argv){
 
         RandomPathGenerator::getInstance()->setVerbose(verbose);
 
+
+        if(verbose){
+
+        		cout << endl;
+        	    cout << "\nParametry programu:" << endl << endl;
+
+
+
+        		switch(algorythm_type){
+        			case 'h'	:
+        				cout << "Algorytm heurystyczny";
+        				break;
+        			case 'e'	:
+        				cout << "  Rodzaj algorytmu:\t\t\t\t:\tAlgorytm ewolucyjny"<< endl<<endl;
+        				cout << "  Liczba generacji\t\t\t\t:\t" << generation_number << endl;
+        				printf("  Liczba osobników populacji początkowej\t:\t%d\n", init_pop_num);
+        				printf("  Operator krzyżowania\t\t\t\t:\t%s\n", crossover_oper.c_str());
+        				printf("  Operator mutacji\t\t\t\t:\t%s\n", mutation_oper.c_str());
+        				break;
+        			case 'y'	:
+        				cout << "Algorytm hybrydowy";
+        				break;
+        			default	:
+        				break;
+        		}
+        		cout << endl;
+        	    printf("  Plik wejściowy\t\t\t\t:\t%s\n", in_file_loc.c_str());
+            	printf("  Plik wyjściowy\t\t\t\t:\t%s\n", out_file_loc.c_str());
+
+            	cout << endl << endl;
+        }
+
         readDataFromFile(in_file_loc.c_str());
+
+
+       	// Wydrukowanie parametrów algorytmu
+        if(verbose){
+            cout << endl <<endl<< "Metadane pliku wejściowego:" << endl << endl;
+            cout << "  Nazwa zbioru\t\t\t:\t" << name << endl;
+            cout << "  Komentarz\t\t\t:\t" << comment << endl;
+            cout << "  Typ węzłów współrzędnych\t:\t" << node_coord_type << endl;
+            cout << "  Liczba węzłów(miast)\t\t:\t" << dimension << endl << endl;
+        }
+
 
         Algorithm *a;
 
         switch(algorythm_type)	{
         				case 'e'	:
         				{
-        					printf("Algorytm ewolucyjny\n");
-
 
         					a = new EvolutionaryAlgorithm();
         					//ustawienie parametrów typowych dla algorytmu ewolucyjnego
@@ -387,21 +433,7 @@ int main(int argc, char ** argv){
         a->setGraph(Graph::getInstance());
         a->performAlgorithm();
 
-    	// Wydrukowanie parametrów algorytmu
-        if(verbose){
-        	printf("\nParametry programu:\n");
-        	printf("  Plik wejściowy: %s\n", in_file_loc.c_str());
-        	printf("  Plik wyjściowy: %s\n", out_file_loc.c_str());
-        	printf("  Liczba populacji początkowej: %d\n", init_pop_num);
-        	printf("  Operator krzyżowania: %s\n", crossover_oper.c_str());
-        	printf("  Operator mutacji: %s\n", mutation_oper.c_str());
 
-        	cout << endl << "Metadane pliku wejściowego:" << endl;
-        	cout << "\tNazwa zbioru:\t\t" << name << endl;
-        	cout << "\t" << comment << endl;
-        	cout << "\tTyp węzłów współrzędnych:\t" << node_coord_type << endl;
-        	cout << "\tLiczba węzłów(miast):\t" << dimension << endl;
-        }
 
 
 
