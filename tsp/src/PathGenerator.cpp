@@ -48,25 +48,25 @@ GraphModel::Path* PathGenerator::generateRandomPath(){
 	Path* path = new Path(Graph::getInstance()->getVertexCount(), pathCount);
 	pathCount++;
 	int size = Graph::getInstance()->getVertexCount();
-	path->addVertex(Graph::getInstance()->getVertex(1));
+
 
 	vector<Vertex*> vvec = Graph::getInstance()->getVertexVector();
 	list<Vertex*> vecList(vvec.begin(), vvec.end());
 
-	vvec.erase(vvec.begin()); // usuwamy zerowy czyli pierwszy bo od niego będziemy zaczynać
-	list<Vertex*>::iterator it =vecList.begin();
-	vecList.remove(*it);
-	it = vecList.begin();
+	//vvec.erase(vvec.begin()); // usuwamy zerowy czyli pierwszy bo od niego będziemy zaczynać
+	list<Vertex*>::iterator it = vecList.begin();
+	//vecList.remove(*it);
+	//it = vecList.begin();
 
 
 	int number = {0};
 	int remain_elems = {0};
 
-
-	for (int i=1; i<size; i++){
+	// Losowanie wierzchołków ścieżki
+	for (int i=0; i<size; i++){
 		//cout<< "Losowanie no." << i<< endl;
 
-		remain_elems = vvec.size();
+		//remain_elems = vvec.size();
 		remain_elems = vecList.size();
 		//cout<< "Rozmiar vektora =" << remain_elems <<endl;
 		//srand(time(0)); //srand powodowało te same sekwencje cały czas
@@ -77,7 +77,7 @@ GraphModel::Path* PathGenerator::generateRandomPath(){
 		number = number % remain_elems;
 		//do{
 			//number = rand()%size+1;
-			//cout<< "\t-\twylosowano liczbę\t:\t" << number << endl;
+		cout<< "\t-\twylosowano liczbę\t:\t" << number << endl;
 		//}while((path->vertexExitst(number)));
 		it = vecList.begin();
 		for (int j=0; j<number; j++){
@@ -86,7 +86,7 @@ GraphModel::Path* PathGenerator::generateRandomPath(){
 		}
 
 		Vertex* v = vvec.at(number);
-		//cout << "pod tym numerem znajduje się " << v->getId() << endl;
+		cout << "pod tym numerem znajduje się " << v->getId() << endl;
 		path->addVertex(*it);
 		vecList.remove(*it);
 
@@ -109,7 +109,7 @@ GraphModel::Path* PathGenerator::generateRandomPath(){
 		for (it=vl.begin(); it != vl.end(); it++){
 			cout << (*it)->getId() << " --> ";
 		}
-		cout <<"1"<< "\t\tDługość: " << path->getLenght() <<endl;
+		cout << "\t\tDługość: " << path->getLenght() <<endl;
 
 	}
 

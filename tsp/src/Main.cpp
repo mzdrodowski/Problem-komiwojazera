@@ -203,7 +203,8 @@ void printUsage(){
 	printf(" -t [=<typ>]\t\t\t typ algorytmu 'e' (ewolucyjny), 'h'(heurystyczny) lub 'y' (hybrydowy)\n" );
 	printf(" -o <plik wynikowy> \t\t nazwa pliku wynikowego \n");
 	printf(" -v \t\t\t\t wypisanie przebiegu działania programu\n");
-	printf("\n");
+	cout << endl;
+	cout <<  "Opcje algorytmu ewolucyjnego:" << endl;
 	printf(" -l <number> \t\t\t liczba osobników w populacji początkowej - domyślnie 6\n");
 	printf(" -p <number>\t\t\t liczba pokoleń (generacji) domyślnie 10\n");
 	printf(" -r [=<oper_krzyżowania>]\t operator krzyżowania(rekombinacji): 'PMX', 'OX' lub 'EX'\n");
@@ -436,13 +437,6 @@ int main(int argc, char ** argv){
 
 
         a->performAlgorithm();
-
-
-
-
-
-
-
 
 
 
