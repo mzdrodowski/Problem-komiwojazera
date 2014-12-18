@@ -6,9 +6,10 @@
  */
 
 #include "EvolutionaryAlgorithm.h"
-#include "../RandomPathGenerator.h"
 #include "../Model/Path.h"
 #include <list>
+
+#include "../PathGenerator.h"
 
 using namespace std;
 using namespace GraphModel;
@@ -61,6 +62,7 @@ int EvolutionaryAlgorithm::performAlgorithm(){
       	}
     	offspringPopulation = crossoverOperator->performMating(breedingPopulation);
         //mutacja  potomstwa;
+
     	mutatedPopulation = mutationOperator->performMutation(offspringPopulation);
 
 
@@ -115,7 +117,7 @@ std::vector<GraphModel::Path*> EvolutionaryAlgorithm::initializePopulation(int c
 
 	vector<Path*> population;
 	for(int i=0; i<count; i++){
-		population.push_back(RandomPathGenerator::getInstance()->generatePath());
+		population.push_back(PathGenerator::getInstance()->generateRandomPath());
 	}
 	return population;
 }

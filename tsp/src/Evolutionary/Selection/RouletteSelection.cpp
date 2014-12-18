@@ -12,8 +12,10 @@
 #include <list>
 #include <deque>
 #include "../../Parameters.h"
-#include "../../RandomPathGenerator.h"
+#include "../../PathGenerator.h"
 #include "../EvolutionaryAlgorithm.h"
+
+
 
 using namespace std;
 using namespace GraphModel;
@@ -47,8 +49,8 @@ vector<Path*> RouletteSelection::selectParents(vector<Path* >* population){
 	if(Parameters::getInstance()->isVerbose()){
 		cout<<endl<< "Ocena przystosowania osobników" << endl;
 	}
-
-	for(int i=0; i<population->size(); i++){
+	int popsize = population->size();
+	for(int i=0; i<popsize; i++){
 
 		Path* p = population->at(i);
 		adj = 1/(p->getLenght());
@@ -84,20 +86,28 @@ vector<Path*> RouletteSelection::selectParents(vector<Path* >* population){
 		}
 
 	}
+
+	if(Parameters::getInstance()->isVerbose()){
+		cout<<endl<< "Losowanie liczb z przedziału 0-1" << endl<<endl;
+	}
+
 	int breadSize = 0;
 	breadSize = (population->size())*2;
 	double d =0;
 
+
+	srand(time(0));
 	for ( int i=0; i<breadSize; i++){
 
-		d=((double) rand()/(double)RAND_MAX);
-
+		d=((double) (rand()%RAND_MAX)/(double)RAND_MAX);
+		//d= gen(rng);
 		int j = 0;
-
 		while(true){
 			double tmp = segmentDeque.at(j);
 			if(d<tmp){
-				cout << "  wylosowano:  "<< d << " z przedziału: " << j <<endl;
+				if(Parameters::getInstance()->isVerbose()){
+					cout << "  Wylosowano:  "<< d << " z przedziału: " << j <<endl;
+				}
 				outcome.push_back(population->at(j));
 				break;
 			}

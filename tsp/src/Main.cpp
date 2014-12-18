@@ -27,8 +27,8 @@ wejściowych itp.
 #include "Model/Edge.h"
 #include "Model/Graph.h"
 #include "Model/Vertex.h"
-#include "RandomPathGenerator.h"
 #include "Parameters.h"
+#include "PathGenerator.h"
 
 
 
@@ -332,7 +332,7 @@ int main(int argc, char ** argv){
 
 /* USTAWIENIE WYBORU ALGORYTMU*/
 
-        RandomPathGenerator::getInstance()->setVerbose(verbose);
+        PathGenerator::getInstance()->setVerbose(verbose);
 
 
         /* WYDRUKOWANIE INFORMACJI O PRZETWARZANYM ZBIORZE I WYBRANYCH PARAMETRACH */
