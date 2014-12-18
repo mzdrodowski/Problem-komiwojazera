@@ -49,38 +49,56 @@ int EvolutionaryAlgorithm::performAlgorithm(){
 	initialPopulation = initializePopulation(init_pop_count);
     // ocena każdego kandydata
 
+
+
     while(!terminationConditionCheck()){
-    	cout<< endl<< endl<<"Pokolenie nr " << current_population_num << endl;
-        //wybór rodziców
+    	cout<< endl<<"Pokolenie nr " << current_population_num;
+        //ocena i wybór osobników
     	breedingPopulation = parentSelection->selectParents(&initialPopulation);
         //Kojarzenie rodziców w pary i krzyżowanie par rodziców;
 
     	//wypisanie najlepszego osobnika w populacji
-      	if(bestSpecimen==NULL){
-    	cout<< "Najlepszy osobnik w populacji:"<<
-        			bestSpecimen->getId() << endl << endl;
+      	if(bestSpecimen!=NULL){
+
+    	cout<< "\tDługość najlepszego osobnika: " <<
+    			bestSpecimen->getLenght() << endl;
       	}
+
+      	// w czasie tej operacji następuje alokacja pamięci dla nowych osobników
     	offspringPopulation = crossoverOperator->performMating(breedingPopulation);
         //mutacja  potomstwa;
 
-    	mutatedPopulation = mutationOperator->performMutation(offspringPopulation);
-
-
+    	mutationOperator->performMutation(&offspringPopulation);
 
 
     	/* zwalnianie pamięci dla ścierzek - osobników starej populacji*/
-        while(initialPopulation.size()!=0){
-        	delete initialPopulation.at(initialPopulation.size()-1);
-        	initialPopulation.pop_back();
-        }
 
-
+    	for (int i = 0; i<initialPopulation.size(); i++){
+    		delete initialPopulation.at(i);
+    	}
         /*mutacja powstała w wyniku krzyżowania i mutacji
     	// zastępuje oryginalną populację*/
 
-    	initialPopulation = mutatedPopulation;
+    	initialPopulation = offspringPopulation;
     	current_population_num++;
     }
+
+    // ocena populacji końcowej
+	breedingPopulation = parentSelection->selectParents(&initialPopulation);
+
+    //wypisanie najlepszego osobnike -- przed zwalnianiem pamięci !
+		cout << "   Najlepszy osobnik:  "<< endl;;
+		list<Vertex*> vl = bestSpecimen->getVertexList();
+		list<Vertex*>::iterator it2;
+		cout<< "  " << bestSpecimen->getId() << "  ";
+		for (it2=vl.begin(); it2 != vl.end(); it2++){
+			cout << (*it2)->getId() << " --> ";
+		}
+
+
+		for (int i = 0; i<initialPopulation.size(); i++){
+    		delete initialPopulation.at(i);
+    	}
 
 
 	return 0;

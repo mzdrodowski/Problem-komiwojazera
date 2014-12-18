@@ -7,20 +7,34 @@
 
 #include "MutationOperator.h"
 #include <vector>
+#include <cstdlib>
+#include <iostream>
 
 using namespace std;
 using namespace GraphModel;
 
+
+
 MutationOperator::MutationOperator() {
-	// TODO Auto-generated constructor stub
+	probability = 0.001;
 
 }
+
 
 MutationOperator::~MutationOperator() {
 	// TODO Auto-generated destructor stub
 }
 
-std::vector<GraphModel::Path*> MutationOperator::performMutation(std::vector<GraphModel::Path*> population){
-	vector <Path *> list;
-	return list;
+void MutationOperator::performMutation(std::vector<GraphModel::Path*>* population){
+	//mutacja może zajść z prawdopodobieństwem  0.001
+	//cout << "Mutacja" << endl;
+	srand(time(NULL));
+	for(int i=0; i< population->size(); ++i){
+		double d = (double)(rand()%RAND_MAX/(double)RAND_MAX);
+		if(d<probability){
+			cout << "Wystąpiła mutacja" << endl;
+			mutate(population->at(i));
+		}
+	}
+
 }

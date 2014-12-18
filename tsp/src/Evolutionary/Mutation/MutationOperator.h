@@ -16,8 +16,10 @@ class MutationOperator {
 public:
 	MutationOperator();
 	virtual ~MutationOperator();
-	virtual std::vector<GraphModel::Path*> performMutation(std::vector<GraphModel::Path*> population);
+	virtual void performMutation(std::vector<GraphModel::Path*>* population);
 	virtual void mutate(GraphModel::Path* specimen) = 0;
+private:
+	double probability;
 };
 
 #endif /* EVOLUTIONARY_MUTATIONOPERATOR_H_ */
