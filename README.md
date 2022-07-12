@@ -1,4 +1,4 @@
-Problem-komiwojażera
+Traveling salesman problem
 ====================
 
-Rozwiązanie problemu komiwojażera przy użyciu algorytmów ewolucyjnych
+Solving traveling salesman problem using evolutionary algorithms
